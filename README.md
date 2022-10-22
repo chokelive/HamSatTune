@@ -1,6 +1,7 @@
 # HamSatTune
 Amateur Radio Satellite Uplink and Downlink with doppler calculation
 
+![image](https://user-images.githubusercontent.com/17312564/197355233-b7461b96-4c38-4377-b0bc-2ae70d396449.png)
 
 
 โปรแกรมช่วยคำนวณค่าความถี่ Uplink และ Downlink ของดาวเทียมวิทยุสมัครเล่น โดยเฉพาะ Linear Satellite ที่การจูนหาค่าความถี่ค่อนข้างจะยุ่งยากเนื่องจาก เนื่องจาก Transponder ดาวเทียมวิทยุสมัครเล่นส่วนใหญ่จะเป็นชนิด Invert หมายถึงความถี่และโหมดของ Uplink จะวิ่งกลับกันกับความถี่ Downlink ดังนั้นโปรแกรมนี้จะช่วยทำหน้าที่คำนวณหาค่าความถี่และโหมดของ Uplink ให้อัตโนมัติ ดาว downlink ที่เราเปลี่ยนแปลง 
