@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>M0JIV.MaidenheadLocator</name>
+    </assembly>
+    <members>
+        <member name="M:M0JIV.MaidenheadLocator.MaidenheadLocatorEngine.GetLocator(System.Double,System.Double,System.Int32)">
+            <summary>
+            Get the Maidenhead locator corresponding to a WGS84 Latitude/Longitude
+            </summary>
+            <param name="Lat"></param>
+            <param name="Lon"></param>
+            <param name="NbPairs">Number of character pairs (e.g. AB12CD34 consists 4 pairs)</param>
+            <returns></returns>
+        </member>
+        <member name="M:M0JIV.MaidenheadLocator.MaidenheadLocatorEngine.GetLatLon(System.String)">
+            <summary>
+            Returns coordinates of centroid of squaroid indicated by the supplied locator
+            </summary>
+            <param name="Locator"></param>
+            <returns></returns>
+        </member>
+        <member name="M:M0JIV.MaidenheadLocator.MaidenheadLocatorEngine.GetLatLonBounds(System.String)">
+            <summary>
+            Returns 3 coordinates corresponding to the bottom left, centroid and top right of the squaroid
+            </summary>
+            <param name="Locator"></param>
+            <returns></returns>
+        </member>
+        <member name="M:M0JIV.MaidenheadLocator.MaidenheadLocatorEngine.GetAllSquaroidsInRange(System.Double,System.Double,System.Double,System.Double,System.Int32)">
+            <summary>
+            Get all squaroids which include the specified area
+            </summary>
+            <param name="MinLat"></param>
+            <param name="MinLon"></param>
+            <param name="MaxLat"></param>
+            <param name="MaxLon"></param>
+            <param name="NbPairs">Number of character pairs in each squaroid</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
