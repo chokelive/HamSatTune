@@ -1,7 +1,8 @@
 # HamSatTune
-Amateur Radio Satellite Uplink and Downlink with doppler calculation
+Amateur Radio Satellite Uplink and Downlink with doppler calculation by Choke E29AHU
 
-![image](https://user-images.githubusercontent.com/17312564/197355233-b7461b96-4c38-4377-b0bc-2ae70d396449.png)
+![image](https://user-images.githubusercontent.com/17312564/197355272-07c955f5-6ad3-4151-9cc0-12270448e245.png)
+
 
 
 โปรแกรมช่วยคำนวณค่าความถี่ Uplink และ Downlink ของดาวเทียมวิทยุสมัครเล่น โดยเฉพาะ Linear Satellite ที่การจูนหาค่าความถี่ค่อนข้างจะยุ่งยากเนื่องจาก เนื่องจาก Transponder ดาวเทียมวิทยุสมัครเล่นส่วนใหญ่จะเป็นชนิด Invert หมายถึงความถี่และโหมดของ Uplink จะวิ่งกลับกันกับความถี่ Downlink ดังนั้นโปรแกรมนี้จะช่วยทำหน้าที่คำนวณหาค่าความถี่และโหมดของ Uplink ให้อัตโนมัติ ดาว downlink ที่เราเปลี่ยนแปลง 
@@ -31,4 +32,4 @@ Amateur Radio Satellite Uplink and Downlink with doppler calculation
 - VFO A คือ Downlink และ VFO B คือ Upink
 - ทุกครั้งที่กด Tune TX หรือ Spacebar โปรแกรมจะสั่ง swtich VFO และป้อนค่าความถี่ Uplink ให้กับวิทยุ
 
-73 de E29AHU
+73 de Choke E29AHU
