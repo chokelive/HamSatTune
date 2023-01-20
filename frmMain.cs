@@ -13,6 +13,7 @@ using SGPdotNET.Observation;
 using SGPdotNET.TLE;
 using SGPdotNET.Util;
 using System.Configuration;
+using System.Reflection;
 
 namespace HamSatTune
 {
@@ -63,6 +64,8 @@ namespace HamSatTune
 
         private void frmMain_Load(object sender, EventArgs e)
         {
+            string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            this.Text = this.Text + " v." + version;
             this.KeyPreview = true;
 
             // Read Config
@@ -176,6 +179,7 @@ namespace HamSatTune
                         case "LSB": rig.setModeLSB(); break;
                         case "USB": rig.setModeUSB(); break;
                         case "FM": rig.setModeFM(); break;
+                        case "DATA-USB": rig.setModeUSBData(); break;
                     }
                 }
             }
@@ -213,6 +217,7 @@ namespace HamSatTune
                 if (rig.getTxStatus() != true)
                 {
                     rig.setFreq(tuneRxFreq);
+                    rig.setFreq(tuneRxFreq); // add for support another radio.
                     prevRxFreq = rig.getFreq();
                 }
             }
@@ -324,6 +329,7 @@ namespace HamSatTune
                     case "LSB": rig.setModeLSB(); break;
                     case "USB": rig.setModeUSB(); break;
                     case "FM": rig.setModeFM(); break;
+                    case "DATA-USB": rig.setModeUSBData(); break;
                 }
                 rig.toggleVfo();
             }

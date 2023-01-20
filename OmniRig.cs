@@ -38,6 +38,11 @@ namespace HamSatTune
             rig.Freq = freq;
         }
 
+        public void setFreqA(int freq)
+        {
+            rig.FreqA = freq;
+        }
+
         public int getFreq()
         {
             return rig.Freq;
@@ -56,6 +61,11 @@ namespace HamSatTune
         public void setModeUSB()
         {
             rig.Mode = RigParamX.PM_SSB_U;
+        }
+
+        public void setModeUSBData()
+        {
+            rig.Mode = RigParamX.PM_DIG_U;
         }
 
         public void setModeCW()

@@ -353,7 +353,7 @@ namespace HamSatTune
             this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.Name = "frmMain";
-            this.Text = "HamSat Tune by E29AHU V1.0";
+            this.Text = "HamSatTune by E29AHU";
             this.Load += new System.EventHandler(this.frmMain_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmMain_KeyDown);
             this.ResumeLayout(false);
