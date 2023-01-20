@@ -1,5 +1,7 @@
 # HamSatTune
-Amateur Radio Satellite Uplink and Downlink with doppler calculation
+Amateur Radio Satellite Uplink and Downlink with doppler calculation by Choke E29AHU
+
+![image](https://user-images.githubusercontent.com/17312564/197355272-07c955f5-6ad3-4151-9cc0-12270448e245.png)
 
 
 
@@ -30,4 +32,4 @@ Amateur Radio Satellite Uplink and Downlink with doppler calculation
 - VFO A คือ Downlink และ VFO B คือ Upink
 - ทุกครั้งที่กด Tune TX หรือ Spacebar โปรแกรมจะสั่ง swtich VFO และป้อนค่าความถี่ Uplink ให้กับวิทยุ
 
-73 de E29AHU
+73 de Choke E29AHU
