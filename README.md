@@ -1,20 +1,27 @@
 # HamSatTune
 Amateur Radio Satellite Uplink and Downlink with doppler calculation by Choke E29AHU
 
-![image](https://user-images.githubusercontent.com/17312564/197355272-07c955f5-6ad3-4151-9cc0-12270448e245.png)
+Lasted:
+Version 1.2.0 Download
 
+![image](https://github.com/chokelive/HamSatTune/assets/17312564/99920e7f-c206-4fbe-9041-7b5bd7414312)
 
 
 โปรแกรมช่วยคำนวณค่าความถี่ Uplink และ Downlink ของดาวเทียมวิทยุสมัครเล่น โดยเฉพาะ Linear Satellite ที่การจูนหาค่าความถี่ค่อนข้างจะยุ่งยากเนื่องจาก เนื่องจาก Transponder ดาวเทียมวิทยุสมัครเล่นส่วนใหญ่จะเป็นชนิด Invert หมายถึงความถี่และโหมดของ Uplink จะวิ่งกลับกันกับความถี่ Downlink ดังนั้นโปรแกรมนี้จะช่วยทำหน้าที่คำนวณหาค่าความถี่และโหมดของ Uplink ให้อัตโนมัติ ดาว downlink ที่เราเปลี่ยนแปลง 
 
-รุ่นวิทยุที่ทดสอบแล้วคือ FT-817 ครับ
+## วิทยุรุ่นที่ผ่านการทดสอบการใช้งาน
+FT-817 IC-705
+ถ้ามีรุ่นอื่นๆ จะต้องการทดสอบแจ้งเข้ามาได้ครับ
 
 ## วิธีการติดตั้ง
 1. ดาวน์โหลดโปรแกรม version ล่าสุดจากหน้า Release https://github.com/chokelive/HamSatTune/releases
 2. แตก Zip ไฟล์ ออกไปวางไว้ตาม Folder ที่ต้องการ
 3. ดาวน์โหลดโปรแกรม Omnirig จาก http://dxatlas.com/omnirig/ และติดตั้งให้เรียบร้อย เพื่อใช้ในการควบคุมวิทยุ
 4. คอมพิวเตอร์ต้องติดตั้ง .NET Version 4.7.2 ไว้แล้วเป็นอย่างต่ำ ถ้าไม่มีเลาเปิดโปรแกรมจะมี error และ window จะแนะนำให้ดาวน์โหลด
-4. เปิดโปรแกรมขึ้นมา และศึกษาวิธีการใช้งานต่อไป
+4. คลิกเปิดโปรแกรมและใช้งานได้เลยครับ
+
+![image](https://github.com/chokelive/HamSatTune/assets/17312564/5d2db9a0-93ba-49ab-a4c3-208ae3ecd40b)
+
 
 ## วิธีการใช้งาน
 1. เลือกดาวเทียมที่ต้องการใช้งานจากเมนู Satellite
