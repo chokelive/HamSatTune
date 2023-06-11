@@ -2,7 +2,7 @@
 Amateur Radio Satellite Uplink and Downlink with doppler calculation by Choke E29AHU
 
 Lasted:
-Version 1.2.0 Download
+[Version 1.2.0 Download](https://github.com/chokelive/HamSatTune/releases/download/V1.2.0/HamSatTune.V1.2.0.zip)
 
 ![image](https://github.com/chokelive/HamSatTune/assets/17312564/99920e7f-c206-4fbe-9041-7b5bd7414312)
 
