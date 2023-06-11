@@ -32,8 +32,12 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.1.0.0")]
-[assembly: AssemblyFileVersion("1.1.0.0")]
+[assembly: AssemblyVersion("1.2.0.0")]
+[assembly: AssemblyFileVersion("1.2.0.0")]
+
+// V1.2.0
+// - Add RX and TX tune to support IC-705 and shoud compatible anoter VFOa and VFOB radio
+
 
 // V1.1.0
 // - Add RX Tune to VHOA for support another radio rxFT-911

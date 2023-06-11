@@ -14,6 +14,7 @@ using SGPdotNET.TLE;
 using SGPdotNET.Util;
 using System.Configuration;
 using System.Reflection;
+using System.Net;
 
 namespace HamSatTune
 {
@@ -56,7 +57,7 @@ namespace HamSatTune
         Sqf sqf; // Current selectd SQF
 
 
-
+        Form _splashScreen;
         public frmMain()
         {
             InitializeComponent();
@@ -64,9 +65,14 @@ namespace HamSatTune
 
         private void frmMain_Load(object sender, EventArgs e)
         {
+            Form _splashScreen = new frmSplashScreen();
+            _splashScreen.Show();
+
             string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             this.Text = this.Text + " v." + version;
             this.KeyPreview = true;
+
+            
 
             // Read Config
             AppSettingsSection config = ConfigurationManager.OpenExeConfiguration(System.Reflection.Assembly.GetExecutingAssembly().Location).AppSettings;
@@ -89,6 +95,8 @@ namespace HamSatTune
             loadTle();
             loadSqf();
 
+            _splashScreen.Hide();
+            
             lbl_RxFreq.Text = "";
             lbl_TxFreq.Text = "";
             lbl_uplinkMode.Text = "";
@@ -97,6 +105,7 @@ namespace HamSatTune
             lbl_el.Text = "";
             lbl_qth.Text = QTH;
             chk_Simplex.Enabled = false;
+            lbl_rigtype.Text = "";
 
         }
 
@@ -104,7 +113,18 @@ namespace HamSatTune
 
         private void loadTle()
         {
+            // download TLE from network.
+            using (var client = new WebClient())
+            {
+                client.DownloadFile("https://www.amsat.org/tle/current/nasabare.txt", "tles.txt");
+            }
             var provider = new LocalTleProvider(true, "tles.txt");
+
+            // download Doppler.sqf from network.
+            using (var client = new WebClient())
+            {
+                client.DownloadFile("https://raw.githubusercontent.com/chokelive/HamSatTune/main/Doppler.sqf", "Doppler.sqf");
+            }
 
             // Get every TLE
             tlelist = provider.GetTles();
@@ -163,7 +183,19 @@ namespace HamSatTune
         // Update Satellite every 1 second
         private void TrackingTimer_Tick(object sender, EventArgs e)
         {
-            if( SatelliteFrequencyReset==true)
+            // Rig Status
+            if (chk_ConnectRig.Checked)
+            {
+                lbl_rigtype.Text = rig.rigType() + " " + rig.rigStatus();
+            }
+            else
+            {
+                lbl_rigtype.Text = "No RIG Connected";
+            }
+
+
+            // Doppler Calculation
+            if ( SatelliteFrequencyReset==true) // Only 1st time do this scope
             {
                 startRxFreq = (int)sqf.downlinkFreq * 1000;
                 startTxFreq = (int)sqf.uplinkFreq * 1000;
@@ -173,6 +205,7 @@ namespace HamSatTune
                 if (chk_ConnectRig.Checked)
                 {
                     rig.setFreq((int)tuneRxFreq);
+                    rig.setVFOA();
                     switch (sqf.downlinkMode)
                     {
                         case "CW": rig.setModeCW(); break;
@@ -181,13 +214,37 @@ namespace HamSatTune
                         case "FM": rig.setModeFM(); break;
                         case "DATA-USB": rig.setModeUSBData(); break;
                     }
+
+                    if (rig.rigType() != "FT-817")
+                    {
+                        rig.setVFOB(); 
+                        switch (sqf.uplinkMode)
+                        {
+                            case "CW": rig.setModeCW(); break;
+                            case "LSB": rig.setModeLSB(); break;
+                            case "USB": rig.setModeUSB(); break;
+                            case "FM": rig.setModeFM(); break;
+                            case "DATA-USB": rig.setModeUSBData(); break;
+                        }
+                        rig.setVFOA();
+                    }
                 }
             }
             // Get rig Rx Frequency
             if (chk_ConnectRig.Checked && SatelliteFrequencyReset!=true )
             {
-                if(rig.getTxStatus() != true)
-                tuneRxFreq = rig.getFreq();
+                if (rig.getTxStatus() != true)
+                {
+
+                    if (rig.rigType() == "FT-817")
+                    {
+                        tuneRxFreq = rig.getFreq();
+                    }
+                    else
+                    {
+                        tuneRxFreq = rig.getFreqA();
+                    }
+                }
             }
             
 
@@ -216,9 +273,17 @@ namespace HamSatTune
             {
                 if (rig.getTxStatus() != true)
                 {
-                    rig.setFreq(tuneRxFreq);
-                    rig.setFreq(tuneRxFreq); // add for support another radio.
-                    prevRxFreq = rig.getFreq();
+                    if (rig.rigType() == "FT-817")
+                    {
+                        rig.setFreq(tuneRxFreq);
+                        prevRxFreq = rig.getFreq();
+                    }
+                    else
+                    {
+                        rig.setFreqA(tuneRxFreq); // add for support another radio.
+                        prevRxFreq = rig.getFreqA();
+                    }
+                                      
                 }
             }
             else
@@ -237,6 +302,14 @@ namespace HamSatTune
             }
             lbl_TxFreq.Text = ((double)txFreq / 1000).ToString("#0.#0");
 
+            // Set TX frequency to IC-705
+            if (chk_ConnectRig.Checked)
+            {
+                if (rig.rigType() != "FT-817")
+                {
+                    rig.setFreqB(txFreq);
+                }
+            }
 
             // Display Mode
             lbl_downlinkMode.Text = sqf.downlinkMode;
@@ -272,6 +345,7 @@ namespace HamSatTune
                 bb_tune.Enabled = false;
                 chk_Simplex.Enabled = true;
                 chk_Simplex.Checked = true;
+                lbl_rigtype.Text = rig.rigType() + " " + rig.rigStatus();
             }
             else
             {
@@ -279,6 +353,7 @@ namespace HamSatTune
                 txt_TuneRx.Enabled = true;
                 bb_tune.Enabled = true;
                 chk_Simplex.Enabled = false;
+                lbl_rigtype.Text = "No Rig Connect";
             }
 
             SatelliteFrequencyReset = true;
@@ -344,5 +419,9 @@ namespace HamSatTune
             }
         }
 
+        private void linkAbout_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/chokelive/HamSatTune/");
+        }
     }
 }

@@ -23,6 +23,16 @@ namespace HamSatTune
             rig = omniRig.Rig1; // Default at Rig1
         }
 
+        public string rigType()
+        {
+            return rig.RigType;
+        }
+
+        public string rigStatus()
+        {
+            return rig.Status.ToString();
+        }
+
         public void OmniRigConfig()
         {
             omniRig.DialogVisible = true;
@@ -43,9 +53,24 @@ namespace HamSatTune
             rig.FreqA = freq;
         }
 
+        public void setFreqB(int freq)
+        {
+            rig.FreqB = freq;
+        }
+
         public int getFreq()
         {
             return rig.Freq;
+        }
+
+        public int getFreqA()
+        {
+            return rig.FreqA;
+        }
+
+        public int getFreqB()
+        {
+            return rig.FreqB;
         }
 
         public void setModeFM()
@@ -83,6 +108,16 @@ namespace HamSatTune
             rig.Vfo = RigParamX.PM_VFOSWAP;
         }
 
+        public void setVFOA()
+        {
+            rig.Vfo = RigParamX.PM_VFOA;
+        }
+
+        public void setVFOB()
+        {
+            rig.Vfo = RigParamX.PM_VFOB;
+        }
+
         public bool getTxStatus()
         {
             if (rig.Tx == RigParamX.PM_TX)
@@ -90,6 +125,8 @@ namespace HamSatTune
             else
                 return false;
         }
+
+        
 
 
     }

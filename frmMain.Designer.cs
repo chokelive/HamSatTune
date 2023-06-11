@@ -29,6 +29,7 @@ namespace HamSatTune
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.cbList = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -54,6 +55,8 @@ namespace HamSatTune
             this.label9 = new System.Windows.Forms.Label();
             this.bb_tuneTx = new System.Windows.Forms.Button();
             this.chk_Simplex = new System.Windows.Forms.CheckBox();
+            this.lbl_rigtype = new System.Windows.Forms.Label();
+            this.linkAbout = new System.Windows.Forms.LinkLabel();
             this.SuspendLayout();
             // 
             // cbList
@@ -319,11 +322,36 @@ namespace HamSatTune
             this.chk_Simplex.UseVisualStyleBackColor = true;
             this.chk_Simplex.CheckedChanged += new System.EventHandler(this.chk_Simplex_CheckedChanged);
             // 
+            // lbl_rigtype
+            // 
+            this.lbl_rigtype.AutoSize = true;
+            this.lbl_rigtype.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_rigtype.ForeColor = System.Drawing.Color.Maroon;
+            this.lbl_rigtype.Location = new System.Drawing.Point(270, 116);
+            this.lbl_rigtype.Name = "lbl_rigtype";
+            this.lbl_rigtype.Size = new System.Drawing.Size(33, 12);
+            this.lbl_rigtype.TabIndex = 26;
+            this.lbl_rigtype.Text = "rigtype";
+            // 
+            // linkAbout
+            // 
+            this.linkAbout.AutoSize = true;
+            this.linkAbout.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.linkAbout.Location = new System.Drawing.Point(350, 139);
+            this.linkAbout.Name = "linkAbout";
+            this.linkAbout.Size = new System.Drawing.Size(35, 13);
+            this.linkAbout.TabIndex = 27;
+            this.linkAbout.TabStop = true;
+            this.linkAbout.Text = "About";
+            this.linkAbout.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkAbout_LinkClicked);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(410, 162);
+            this.Controls.Add(this.linkAbout);
+            this.Controls.Add(this.lbl_rigtype);
             this.Controls.Add(this.bb_tuneTx);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
@@ -350,9 +378,11 @@ namespace HamSatTune
             this.Controls.Add(this.cbList);
             this.Controls.Add(this.chk_Simplex);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.Name = "frmMain";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "HamSatTune by E29AHU";
             this.Load += new System.EventHandler(this.frmMain_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmMain_KeyDown);
@@ -388,6 +418,8 @@ namespace HamSatTune
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Button bb_tuneTx;
         private System.Windows.Forms.CheckBox chk_Simplex;
+        private System.Windows.Forms.Label lbl_rigtype;
+        private System.Windows.Forms.LinkLabel linkAbout;
     }
 }
 
