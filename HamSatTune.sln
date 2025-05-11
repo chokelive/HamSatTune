@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31515.178
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35707.178 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HamSatTune", "HamSatTune\HamSatTune.csproj", "{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HamSatTune", "HamSatTune.csproj", "{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SGP.NET", "SGP.NET-master\SGP.NET\SGP.NET.csproj", "{ABCC9A1C-6A62-4687-95EA-2C66CF165715}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,11 +17,12 @@ Global
 		{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABCC9A1C-6A62-4687-95EA-2C66CF165715}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABCC9A1C-6A62-4687-95EA-2C66CF165715}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABCC9A1C-6A62-4687-95EA-2C66CF165715}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABCC9A1C-6A62-4687-95EA-2C66CF165715}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {7F0BFB35-EFDB-4576-B7B3-849E412649AC}
 	EndGlobalSection
 EndGlobal

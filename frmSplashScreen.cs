@@ -13,6 +13,7 @@ namespace HamSatTune
 {
     public partial class frmSplashScreen : Form
     {
+        //public string txt_status_message = "Ongoing update satellite configulation file from internet...";
         public frmSplashScreen()
         {
             InitializeComponent();

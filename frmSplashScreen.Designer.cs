@@ -54,9 +54,9 @@ namespace HamSatTune
             this.lbl_statusUpdate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
             this.lbl_statusUpdate.Location = new System.Drawing.Point(198, 111);
             this.lbl_statusUpdate.Name = "lbl_statusUpdate";
-            this.lbl_statusUpdate.Size = new System.Drawing.Size(270, 13);
+            this.lbl_statusUpdate.Size = new System.Drawing.Size(37, 13);
             this.lbl_statusUpdate.TabIndex = 1;
-            this.lbl_statusUpdate.Text = "Ongoing update satellite configulation file from internet...";
+            this.lbl_statusUpdate.Text = "Status";
             // 
             // pictureBox1
             // 
@@ -102,8 +102,8 @@ namespace HamSatTune
         #endregion
 
         private System.Windows.Forms.Label lblHeader;
-        private System.Windows.Forms.Label lbl_statusUpdate;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label lbl_version;
+        public System.Windows.Forms.Label lbl_statusUpdate;
     }
 }

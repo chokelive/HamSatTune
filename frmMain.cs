@@ -57,7 +57,7 @@ namespace HamSatTune
         Sqf sqf; // Current selectd SQF
 
 
-        Form _splashScreen;
+        frmSplashScreen _splashScreen;
         public frmMain()
         {
             InitializeComponent();
@@ -65,7 +65,7 @@ namespace HamSatTune
 
         private void frmMain_Load(object sender, EventArgs e)
         {
-            Form _splashScreen = new frmSplashScreen();
+            _splashScreen = new frmSplashScreen();
             _splashScreen.Show();
 
             string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
@@ -73,7 +73,6 @@ namespace HamSatTune
             this.KeyPreview = true;
 
             
-
             // Read Config
             AppSettingsSection config = ConfigurationManager.OpenExeConfiguration(System.Reflection.Assembly.GetExecutingAssembly().Location).AppSettings;
             string QTH = config.Settings["QTH"].Value;
@@ -92,8 +91,9 @@ namespace HamSatTune
             var location = new GeodeticCoordinate(Angle.FromDegrees(lat), Angle.FromDegrees(lon), 0);
             groundStation = new GroundStation(location);
 
-            loadTle();
-            loadSqf();
+
+           loadTle();
+           loadSqf();
 
             _splashScreen.Hide();
             
@@ -113,20 +113,48 @@ namespace HamSatTune
 
         private void loadTle()
         {
-            // download TLE from network.
-            using (var client = new WebClient())
+            // download TLE from network.  
+            try
             {
-                client.DownloadFile("https://www.amsat.org/tle/current/nasabare.txt", "tles.txt");
+                using (var client = new WebClient())
+                {
+                    string tempFile = "tles_temp.txt";
+                    client.DownloadFile("https://www.amsat.org/tle/current/nasabare.txt", tempFile);
+                    File.Copy(tempFile, "tles.txt", true);
+                    File.Delete(tempFile);
+                }
             }
+            catch (Exception ex)
+            {
+                //essageBox.Show(this, "Error: " + ex.Message + "\nUsing existing tles.txt file if available.");
+                _splashScreen.lbl_statusUpdate.Text = "Cannot update lasted TLE file from Internet...";
+                Application.DoEvents(); // Allow UI to refresh
+                System.Threading.Thread.Sleep(3000);
+
+            }
+
             var provider = new LocalTleProvider(true, "tles.txt");
 
-            // download Doppler.sqf from network.
-            using (var client = new WebClient())
+            // download Doppler.sqf from network.  
+            try
             {
-                client.DownloadFile("https://raw.githubusercontent.com/chokelive/HamSatTune/main/Doppler.sqf", "Doppler.sqf");
+                using (var client = new WebClient())
+                {
+                    string tempFile = "Doppler_temp.sqf";
+                    client.DownloadFile("https://raw.githubusercontent.com/chokelive/HamSatTune/main/Doppler.sqf", tempFile);
+                    File.Copy(tempFile, "Doppler.sqf", true);
+                    File.Delete(tempFile);
+                }
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show(this, "Error: " + ex.Message + "\nUsing existing Doppler.sqf file if available.");
+                _splashScreen.lbl_statusUpdate.Text = "Cannot update lasted SQF file from internet...";
+                Application.DoEvents(); // Allow UI to refresh
+                System.Threading.Thread.Sleep(3000);
             }
 
-            // Get every TLE
+            // Get every TLE  
             tlelist = provider.GetTles();
         }
 
@@ -202,13 +230,18 @@ namespace HamSatTune
                 prevRxFreq = (int)sqf.downlinkFreq * 1000;
                 tuneRxFreq = (int)sqf.downlinkFreq * 1000;
 
+                if (sqf.downlinkMode == "CW")
+                {
+                    startRxFreq = startRxFreq - 1000; // and adjust frequency to lower 1 khz to ensure RX signal is covered.
+                }
+
                 if (chk_ConnectRig.Checked)
                 {
                     rig.setFreq((int)tuneRxFreq);
                     rig.setVFOA();
                     switch (sqf.downlinkMode)
                     {
-                        case "CW": rig.setModeCW(); break;
+                        case "CW": rig.setModeCW_RX(); break;
                         case "LSB": rig.setModeLSB(); break;
                         case "USB": rig.setModeUSB(); break;
                         case "FM": rig.setModeFM(); break;
@@ -235,8 +268,11 @@ namespace HamSatTune
             {
                 if (rig.getTxStatus() != true)
                 {
-
                     if (rig.rigType() == "FT-817")
+                    {
+                        tuneRxFreq = rig.getFreq();
+                    }
+                    else if (rig.rigType() == "IC-756 Pro")
                     {
                         tuneRxFreq = rig.getFreq();
                     }
@@ -278,6 +314,11 @@ namespace HamSatTune
                         rig.setFreq(tuneRxFreq);
                         prevRxFreq = rig.getFreq();
                     }
+                    else if (rig.rigType() == "IC-756 Pro")
+                    {
+                        rig.setFreq(tuneRxFreq);
+                        prevRxFreq = rig.getFreq();
+                    }
                     else
                     {
                         rig.setFreqA(tuneRxFreq); // add for support another radio.
@@ -312,7 +353,15 @@ namespace HamSatTune
             }
 
             // Display Mode
-            lbl_downlinkMode.Text = sqf.downlinkMode;
+            if(sqf.downlinkMode == "CW")
+            {
+                lbl_downlinkMode.Text = "USB"; // Set USB downlink mode for CW linear transponder
+                // and adjust frequency to lower 1 khz to ensure RX signal is covered.
+            }
+            else
+            {
+                lbl_downlinkMode.Text = sqf.downlinkMode;
+            }
             lbl_uplinkMode.Text = sqf.uplinkMode;
 
             SatelliteFrequencyReset = false;

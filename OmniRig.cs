@@ -98,6 +98,11 @@ namespace HamSatTune
             rig.Mode = RigParamX.PM_CW_U;
         }
 
+        public void setModeCW_RX() // Setup RX USB for CW for wide bandwidth receive
+        {
+            rig.Mode = RigParamX.PM_SSB_U;
+        }
+
         public void setSplit()
         {
             rig.Split = RigParamX.PM_SPLITON;
