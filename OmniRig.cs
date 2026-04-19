@@ -11,6 +11,7 @@ namespace HamSatTune
     {
         private OmniRigX omniRig;
         private IRigX rig;
+        private IRigX rig2;
 
         public OmniRig()
         {
@@ -23,14 +24,29 @@ namespace HamSatTune
             rig = omniRig.Rig1; // Default at Rig1
         }
 
+        public void rig2Connect()
+        {
+            rig2 = omniRig.Rig2; // Default at Rig1
+        }
+
         public string rigType()
         {
             return rig.RigType;
         }
 
+        public string rig2Type()
+        {
+            return rig2.RigType;
+        }
+
         public string rigStatus()
         {
             return rig.Status.ToString();
+        }
+
+        public string rig2Status()
+        {
+            return rig2.Status.ToString();
         }
 
         public void OmniRigConfig()
@@ -43,9 +59,19 @@ namespace HamSatTune
             rig = null;
         }
 
+        public void disConnectRig2()
+        {
+            rig2 = null;
+        }
+
         public void setFreq(int freq)
         {
             rig.Freq = freq;
+        }
+
+        public void setFreq_Rig2(int freq)
+        {
+            rig2.Freq = freq;
         }
 
         public void setFreqA(int freq)
@@ -78,9 +104,19 @@ namespace HamSatTune
             rig.Mode = RigParamX.PM_FM;
         }
 
+        public void setModeFM_Rig2()
+        {
+            rig.Mode = RigParamX.PM_FM;
+        }
+
         public void setModeLSB()
         {
             rig.Mode = RigParamX.PM_SSB_L;
+        }
+
+        public void setModeLSB_Rig2()
+        {
+            rig2.Mode = RigParamX.PM_SSB_L;
         }
 
         public void setModeUSB()
@@ -88,14 +124,29 @@ namespace HamSatTune
             rig.Mode = RigParamX.PM_SSB_U;
         }
 
+        public void setModeUSB_Rig2()
+        {
+            rig2.Mode = RigParamX.PM_SSB_U;
+        }
+
         public void setModeUSBData()
         {
             rig.Mode = RigParamX.PM_DIG_U;
         }
 
+        public void setModeUSBData_Rig2()
+        {
+            rig.Mode = RigParamX.PM_DIG_L;
+        }
+
         public void setModeCW()
         {
             rig.Mode = RigParamX.PM_CW_U;
+        }
+
+        public void setModeCW_Rig2()
+        {
+            rig2.Mode = RigParamX.PM_CW_U;
         }
 
         public void setModeCW_RX() // Setup RX USB for CW for wide bandwidth receive
