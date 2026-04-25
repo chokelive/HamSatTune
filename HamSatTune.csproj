@@ -187,6 +187,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="frmCalibrate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCalibrate.Designer.cs">
+      <DependentUpon>frmCalibrate.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -199,6 +205,7 @@
     <Compile Include="frmQTH.Designer.cs">
       <DependentUpon>frmQTH.cs</DependentUpon>
     </Compile>
+    <Compile Include="Globals.cs" />
     <Compile Include="OmniRig.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -208,6 +215,10 @@
     <Compile Include="frmSplashScreen.Designer.cs">
       <DependentUpon>frmSplashScreen.cs</DependentUpon>
     </Compile>
+    <Compile Include="Sqf.cs" />
+    <EmbeddedResource Include="frmCalibrate.resx">
+      <DependentUpon>frmCalibrate.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>

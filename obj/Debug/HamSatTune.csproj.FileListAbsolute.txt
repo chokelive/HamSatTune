@@ -38,3 +38,5 @@ C:\Dev\HamSatTune\obj\Debug\HamSatTune.csproj.CoreCompileInputs.cache
 C:\Dev\HamSatTune\obj\Debug\HamSatTune.csproj.Up2Date
 C:\Dev\HamSatTune\obj\Debug\HamSatTune.exe
 C:\Dev\HamSatTune\obj\Debug\HamSatTune.pdb
+C:\Dev\HamSatTune\obj\Debug\HamSatTune.exe.config
+C:\Dev\HamSatTune\obj\Debug\HamSatTune.frmCalibrate.resources

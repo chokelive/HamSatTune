@@ -59,6 +59,7 @@ namespace HamSatTune
             this.linkAbout = new System.Windows.Forms.LinkLabel();
             this.chk_ConnectRig2 = new System.Windows.Forms.CheckBox();
             this.lbl_rig2type = new System.Windows.Forms.Label();
+            this.bb_rigcal = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // cbList
@@ -329,7 +330,7 @@ namespace HamSatTune
             this.lbl_rigtype.AutoSize = true;
             this.lbl_rigtype.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_rigtype.ForeColor = System.Drawing.Color.Maroon;
-            this.lbl_rigtype.Location = new System.Drawing.Point(276, 127);
+            this.lbl_rigtype.Location = new System.Drawing.Point(269, 127);
             this.lbl_rigtype.Name = "lbl_rigtype";
             this.lbl_rigtype.Size = new System.Drawing.Size(33, 12);
             this.lbl_rigtype.TabIndex = 26;
@@ -339,7 +340,7 @@ namespace HamSatTune
             // 
             this.linkAbout.AutoSize = true;
             this.linkAbout.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.linkAbout.Location = new System.Drawing.Point(350, 165);
+            this.linkAbout.Location = new System.Drawing.Point(168, 141);
             this.linkAbout.Name = "linkAbout";
             this.linkAbout.Size = new System.Drawing.Size(35, 13);
             this.linkAbout.TabIndex = 27;
@@ -363,17 +364,28 @@ namespace HamSatTune
             this.lbl_rig2type.AutoSize = true;
             this.lbl_rig2type.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_rig2type.ForeColor = System.Drawing.Color.Maroon;
-            this.lbl_rig2type.Location = new System.Drawing.Point(276, 142);
+            this.lbl_rig2type.Location = new System.Drawing.Point(269, 142);
             this.lbl_rig2type.Name = "lbl_rig2type";
             this.lbl_rig2type.Size = new System.Drawing.Size(33, 12);
             this.lbl_rig2type.TabIndex = 29;
             this.lbl_rig2type.Text = "rigtype";
+            // 
+            // bb_rigcal
+            // 
+            this.bb_rigcal.Location = new System.Drawing.Point(349, 160);
+            this.bb_rigcal.Name = "bb_rigcal";
+            this.bb_rigcal.Size = new System.Drawing.Size(48, 21);
+            this.bb_rigcal.TabIndex = 30;
+            this.bb_rigcal.Text = "RigCal";
+            this.bb_rigcal.UseVisualStyleBackColor = true;
+            this.bb_rigcal.Click += new System.EventHandler(this.bb_rigcal_Click);
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(410, 190);
+            this.Controls.Add(this.bb_rigcal);
             this.Controls.Add(this.lbl_rig2type);
             this.Controls.Add(this.chk_ConnectRig2);
             this.Controls.Add(this.linkAbout);
@@ -448,6 +460,7 @@ namespace HamSatTune
         private System.Windows.Forms.LinkLabel linkAbout;
         private System.Windows.Forms.CheckBox chk_ConnectRig2;
         private System.Windows.Forms.Label lbl_rig2type;
+        private System.Windows.Forms.Button bb_rigcal;
     }
 }
 

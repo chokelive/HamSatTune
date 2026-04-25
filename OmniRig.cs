@@ -106,7 +106,7 @@ namespace HamSatTune
 
         public void setModeFM_Rig2()
         {
-            rig.Mode = RigParamX.PM_FM;
+            rig2.Mode = RigParamX.PM_FM;
         }
 
         public void setModeLSB()
@@ -136,7 +136,17 @@ namespace HamSatTune
 
         public void setModeUSBData_Rig2()
         {
+            rig2.Mode = RigParamX.PM_DIG_U;
+        }
+
+        public void setModeLSBData()
+        {
             rig.Mode = RigParamX.PM_DIG_L;
+        }
+
+        public void setModeLSBData_Rig2()
+        {
+            rig2.Mode = RigParamX.PM_DIG_L;
         }
 
         public void setModeCW()

@@ -23,6 +23,9 @@ namespace HamSatTune
     public partial class frmMain : Form
     {
         // Global Variable
+
+        int updateInterval = 1000; //ms
+
         Dictionary<int, Tle> tlelist;
         Tle TleUse;
         uint norad;
@@ -32,31 +35,27 @@ namespace HamSatTune
         int txFreq;
         
         int startRxFreq;
+        int startRxFreqWithOffset;
         int startTxFreq;
+        int startTxFreqWithOffset;
         int prevRxFreq;
         int tuneRxFreq;
         int rxDoppler;
         int txDoppler;
 
+        Double az;
+        Double el;
+        Double el_last;
+
         bool SatelliteFrequencyReset = false;
-        bool rxFreqChangeFlag = false;
+        bool SatelliteModeReset = false;
+        bool rxFreqChangeFlag = false; 
 
         OmniRig rig;
 
-        struct Sqf
-        {
-            public string sateName;
-            public double downlinkFreq;
-            public double uplinkFreq;
-            public string downlinkMode;
-            public string uplinkMode;
-            public string transponderType;
-            public double downlinkOffset;
-            public double uplinkOffset;
-            public string comment;
-        }
         Dictionary<int, Sqf> sqflist; //key = satName, value=frequency and mode detail
         Sqf sqf; // Current selectd SQF
+        Sqf sqf_last; // Lasted SQF
 
 
         frmSplashScreen _splashScreen;
@@ -83,7 +82,7 @@ namespace HamSatTune
 
             // Setup Timer
             trackingTimer = new Timer();
-            trackingTimer.Interval = 1000;
+            trackingTimer.Interval = updateInterval;
             trackingTimer.Tick += TrackingTimer_Tick;
 
             // Setup Omnirig
@@ -108,6 +107,7 @@ namespace HamSatTune
             lbl_qth.Text = QTH;
             chk_Simplex.Enabled = false;
             lbl_rigtype.Text = "";
+            lbl_rig2type.Text = "";
 
         }
 
@@ -186,7 +186,8 @@ namespace HamSatTune
 
         private void cbList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            sqf = sqflist[cbList.SelectedIndex];
+            Globals.CurrentSqf = sqflist[cbList.SelectedIndex];
+            sqf = Globals.CurrentSqf;
 
             // check norad id
             norad = 0;
@@ -206,31 +207,52 @@ namespace HamSatTune
                 trackingTimer.Start();
             }
 
-            SatelliteFrequencyReset = true;
+            // For smooth mode change, We will reset frequency when Sattellite and Frequency is difference only.
+            if (sqf_last.sateName == sqf.sateName)
+            {
+                if(sqf_last.downlinkFreq != sqf.downlinkFreq)
+                {
+                    if(sqf_last.uplinkFreq != sqf.uplinkFreq)
+                    {
+                        SatelliteFrequencyReset = true;
+                    }
+
+                }
+            }else if(sqf_last.sateName != sqf.sateName)
+            {
+                SatelliteFrequencyReset = true;
+            }
+
+            SatelliteModeReset = true; // only set new mode.
+
+            sqf_last = sqf;
+
         }
 
 
         // Update Satellite every 1 second
         private void TrackingTimer_Tick(object sender, EventArgs e)
         {
+            sqf = Globals.CurrentSqf; // Get latest SQF in case user change SQF when timer is running.
+
             // Rig1 Status
             if (chk_ConnectRig.Checked)
             {
-                lbl_rigtype.Text = "Rig1:" + rig.rigType() + " " + rig.rigStatus();
+                lbl_rigtype.Text = "Rig1: " + rig.rigType() + " " + rig.rigStatus();
             }
             else if (chk_ConnectRig.Checked)
             {
-                lbl_rigtype.Text = "No RIG1 Connected";
+                lbl_rigtype.Text = "No Rig1 Connected";
             }
             
             // Rig2 Status
             if (chk_ConnectRig2.Checked) 
             {
-                lbl_rig2type.Text = "Rig2:" + rig.rig2Type() + " " + rig.rig2Status();
+                lbl_rig2type.Text = "Rig2: " + rig.rig2Type() + " " + rig.rig2Status();
             }
             else
             {
-                lbl_rig2type.Text = "No RIG2 Connectd";
+                lbl_rig2type.Text = "No Rig2 Connected";
             }
 
 
@@ -246,21 +268,25 @@ namespace HamSatTune
                 {
                     startRxFreq = startRxFreq - 1000; // and adjust frequency to lower 1 khz to ensure RX signal is covered.
                 }
+            }
 
+            if (SatelliteModeReset == true) // Only 1st time do this scope
+            {
                 if (chk_ConnectRig.Checked)
                 {
                     rig.setFreq((int)tuneRxFreq);
                     rig.setVFOA();
-                    switch (sqf.downlinkMode)
+                    switch (sqf.downlinkMode) // for downlink
                     {
                         case "CW": rig.setModeCW_RX(); break;
                         case "LSB": rig.setModeLSB(); break;
                         case "USB": rig.setModeUSB(); break;
                         case "FM": rig.setModeFM(); break;
-                        case "DATA-USB": rig.setModeUSBData(); break;
+                        case "USB-D": rig.setModeUSBData(); break;
+                        case "USB-L": rig.setModeLSBData(); break;
                     }
 
-                    if (rig.rigType() != "FT-817")
+                    if (rig.rigType() != "FT-817" || rig.rigType() == "FT-857" || rig.rigType() == "FT-897")  // for downlink
                     {
                         rig.setVFOB();
                         switch (sqf.uplinkMode)
@@ -269,7 +295,8 @@ namespace HamSatTune
                             case "LSB": rig.setModeLSB(); break;
                             case "USB": rig.setModeUSB(); break;
                             case "FM": rig.setModeFM(); break;
-                            case "DATA-USB": rig.setModeUSBData(); break;
+                            case "USB-D": rig.setModeUSBData(); break;
+                            case "LSB-D": rig.setModeLSBData(); break;
                         }
                         rig.setVFOA();
                     }
@@ -282,22 +309,30 @@ namespace HamSatTune
                             case "LSB": rig.setModeLSB_Rig2(); break;
                             case "USB": rig.setModeUSB_Rig2(); break;
                             case "FM": rig.setModeFM_Rig2(); break;
-                            case "DATA-USB": rig.setModeUSBData_Rig2(); break;
+                            case "USB-D": rig.setModeUSBData_Rig2(); break;
+                            case "LSB-D": rig.setModeLSBData_Rig2(); break;
+                        }
+
+                        if (rig.rig2Type() == "FT-817" || rig.rig2Type() == "FT-857" || rig.rig2Type() == "FT-897") // Special only for FT-8x7
+                        {
+                            switch (sqf.uplinkMode)
+                            {
+                                case "LSB-D": rig.setModeUSBData_Rig2(); break;
+                            }
                         }
                     }
 
                 }
             }
+
+
+
             // Get rig Rx Frequency
             if (chk_ConnectRig.Checked && SatelliteFrequencyReset!=true )
             {
                 if (rig.getTxStatus() != true)
                 {
-                    if (rig.rigType() == "FT-817")
-                    {
-                        tuneRxFreq = rig.getFreq();
-                    }
-                    else if (rig.rigType() == "IC-756 Pro")
+                    if (rig.rigType() == "FT-817" || rig.rigType() == "FT-857" || rig.rigType() == "FT-897" || rig.rigType() == "IC-756 Pro")
                     {
                         tuneRxFreq = rig.getFreq();
                     }
@@ -315,19 +350,32 @@ namespace HamSatTune
             {
                 rxFreqChangeFlag = true;
                 Console.WriteLine((tuneRxFreq - prevRxFreq).ToString());
-                startRxFreq = tuneRxFreq - rxDoppler;
+                startRxFreq = tuneRxFreq - rxDoppler - (int)sqf.downlinkOffset;
             }
 
             Satellite sat = new Satellite(TleUse);
             var observation = groundStation.Observe(sat, DateTime.UtcNow);
 
+            // Get AZ, EL
+            az = observation.Azimuth.Degrees;
+            el = observation.Elevation.Degrees;
+
+            // reset frequency if Satellite AOS
+            if (el_last<0 && el>0)
+            {
+                SatelliteFrequencyReset = true;
+                SatelliteModeReset = true;
+            }
+            el_last = el;
+
             // Display AZ, EL
-            lbl_az.Text = observation.Azimuth.Degrees.ToString("#0.#0°");
-            lbl_el.Text = observation.Elevation.Degrees.ToString("#0.#0°");
+            lbl_az.Text = az.ToString("#0.#0°");
+            lbl_el.Text = el.ToString("#0.#0°");
 
             // Display Frequency
-            rxDoppler = (int)observation.GetDopplerShift((double)startRxFreq);
-            tuneRxFreq = startRxFreq + rxDoppler;
+            startRxFreqWithOffset = startRxFreq + (int)sqf.downlinkOffset; // add offset for user to adjust downlink frequency, avoid some radio cannot set exact frequency issue.
+            rxDoppler = (int)observation.GetDopplerShift((double)startRxFreqWithOffset);
+            tuneRxFreq = startRxFreqWithOffset + rxDoppler;
             lbl_RxFreq.Text = ((double)tuneRxFreq/1000).ToString("#0.#0");
             //prevRxFreq = tuneRxFreq;
             if(chk_ConnectRig.Checked && rxFreqChangeFlag != true)
@@ -359,8 +407,12 @@ namespace HamSatTune
 
 
             // Uplink frequency
-            txDoppler = -(int)observation.GetDopplerShift(startTxFreq);
-            txFreq = startTxFreq + txDoppler;
+
+            // add offset for user to adjust uplink frequency, avoid some radio cannot set exact frequency issue.
+            startTxFreqWithOffset = startTxFreq + (int)sqf.uplinkOffset;
+
+            txDoppler = -(int)observation.GetDopplerShift(startTxFreqWithOffset);
+            txFreq = startTxFreqWithOffset + txDoppler;
             // Tunning Adjust follow to Tx
             if (sqf.transponderType == "REV")
             {
@@ -396,6 +448,7 @@ namespace HamSatTune
             lbl_uplinkMode.Text = sqf.uplinkMode;
 
             SatelliteFrequencyReset = false;
+            SatelliteModeReset = false;
             rxFreqChangeFlag = false;
 
         }
@@ -527,5 +580,20 @@ namespace HamSatTune
             System.Diagnostics.Process.Start("https://github.com/chokelive/HamSatTune/");
         }
 
+        private void bb_rigcal_Click(object sender, EventArgs e)
+        {
+            using (frmCalibrate rigcal = new frmCalibrate())
+            {
+                DialogResult dr = rigcal.ShowDialog();
+
+                if (dr == DialogResult.OK)
+                {
+                    // Save updated offsets back to Doppler.sqf
+                    rigcal.SaveOffsetsToFile();
+                    loadSqf(); // reload sqf to make sure get latest sqf if user update sqf file when software is running.
+                    rigcal.Dispose();
+                }
+            }
+        }
     }
 }
