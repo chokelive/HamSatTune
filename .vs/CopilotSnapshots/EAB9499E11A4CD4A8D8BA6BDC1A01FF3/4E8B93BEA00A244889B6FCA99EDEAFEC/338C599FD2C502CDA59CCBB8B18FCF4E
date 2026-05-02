@@ -250,7 +250,7 @@ namespace HamSatTune
             // Rig2 Status
             if (chk_ConnectRig2.Checked) 
             {
-                lbl_rigtype.Text = "Rig2: " + rig.rig2Type() + " " + rig.rig2Status();
+                lbl_rig2type.Text = "Rig2: " + rig.rig2Type() + " " + rig.rig2Status();
             }
             else
             {

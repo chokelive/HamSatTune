@@ -3,52 +3,52 @@
   "WorkspaceRootPath": "C:\\Dev\\HamSatTune\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|C:\\Dev\\HamSatTune\\frmmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|solutionrelative:frmmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|C:\\Dev\\HamSatTune\\frmmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|solutionrelative:frmmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|c:\\dev\\hamsattune\\frmcalibrate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|solutionrelative:frmcalibrate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|c:\\dev\\hamsattune\\frmcalibrate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|solutionrelative:frmcalibrate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|c:\\dev\\hamsattune\\globals.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|solutionrelative:globals.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|c:\\dev\\hamsattune\\sqf.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|solutionrelative:sqf.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|C:\\Dev\\HamSatTune\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|c:\\dev\\hamsattune\\frmmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|solutionrelative:frmmain.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|C:\\Dev\\HamSatTune\\frmsplashscreen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|solutionrelative:frmsplashscreen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|c:\\dev\\hamsattune\\frmqth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|solutionrelative:frmqth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+      "AbsoluteMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|C:\\Dev\\HamSatTune\\frmmain.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|solutionrelative:frmmain.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|c:\\dev\\hamsattune\\frmqth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|solutionrelative:frmqth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|C:\\Dev\\HamSatTune\\frmcalibrate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|solutionrelative:frmcalibrate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|C:\\Dev\\HamSatTune\\sqf.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|solutionrelative:sqf.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|C:\\Dev\\HamSatTune\\properties\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|solutionrelative:properties\\assemblyinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|C:\\Dev\\HamSatTune\\omnirig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|solutionrelative:omnirig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|C:\\Dev\\HamSatTune\\frmcalibrate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|solutionrelative:frmcalibrate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|C:\\Dev\\HamSatTune\\globals.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|solutionrelative:globals.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|C:\\Dev\\HamSatTune\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|C:\\Dev\\HamSatTune\\frmqth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|solutionrelative:frmqth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|C:\\Dev\\HamSatTune\\frmqth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|solutionrelative:frmqth.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{1EDBB49D-652D-4AF5-883F-E513AFB3E4E2}|HamSatTune.csproj|C:\\Dev\\HamSatTune\\frmsplashscreen.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -62,84 +62,20 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Globals.cs",
-              "DocumentMoniker": "C:\\Dev\\HamSatTune\\Globals.cs",
-              "RelativeDocumentMoniker": "Globals.cs",
-              "ToolTip": "C:\\Dev\\HamSatTune\\Globals.cs",
-              "RelativeToolTip": "Globals.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-25T16:32:50.677Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "frmSplashScreen.cs",
-              "DocumentMoniker": "C:\\Dev\\HamSatTune\\frmSplashScreen.cs",
-              "RelativeDocumentMoniker": "frmSplashScreen.cs",
-              "ToolTip": "C:\\Dev\\HamSatTune\\frmSplashScreen.cs",
-              "RelativeToolTip": "frmSplashScreen.cs",
-              "ViewState": "AgIAAAQAAAAAAAAAAAArwAoAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-11T16:37:11.279Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "frmMain.cs",
-              "DocumentMoniker": "C:\\Dev\\HamSatTune\\frmMain.cs",
-              "RelativeDocumentMoniker": "frmMain.cs",
-              "ToolTip": "C:\\Dev\\HamSatTune\\frmMain.cs",
-              "RelativeToolTip": "frmMain.cs",
-              "ViewState": "AgIAAKQAAAAAAAAAAAAWwLwAAAAoAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-11T13:58:27.33Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "frmCalibrate.cs",
-              "DocumentMoniker": "C:\\Dev\\HamSatTune\\frmCalibrate.cs",
-              "RelativeDocumentMoniker": "frmCalibrate.cs",
-              "ToolTip": "C:\\Dev\\HamSatTune\\frmCalibrate.cs",
-              "RelativeToolTip": "frmCalibrate.cs",
-              "ViewState": "AgIAAIEAAAAAAAAAAAAAAJMAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-25T13:39:53.408Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Dev\\HamSatTune\\Program.cs",
-              "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\Dev\\HamSatTune\\Program.cs",
-              "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-11T14:17:39.843Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "frmCalibrate.cs [Design]",
-              "DocumentMoniker": "C:\\Dev\\HamSatTune\\frmCalibrate.cs",
-              "RelativeDocumentMoniker": "frmCalibrate.cs",
-              "ToolTip": "C:\\Dev\\HamSatTune\\frmCalibrate.cs [Design]",
-              "RelativeToolTip": "frmCalibrate.cs [Design]",
+              "Title": "frmMain.Designer.cs",
+              "DocumentMoniker": "C:\\Dev\\HamSatTune\\frmMain.Designer.cs",
+              "RelativeDocumentMoniker": "frmMain.Designer.cs",
+              "ToolTip": "C:\\Dev\\HamSatTune\\frmMain.Designer.cs",
+              "RelativeToolTip": "frmMain.Designer.cs",
+              "ViewState": "AgIAAKABAAAAAAAAAAAjwK4BAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-24T17:06:39.7Z",
-              "EditorCaption": " [Design]"
+              "WhenOpened": "2026-04-26T08:54:12.741Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -151,24 +87,22 @@
               "RelativeToolTip": "Sqf.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-25T15:01:53.215Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-25T15:01:53.215Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 10,
               "Title": "frmQTH.cs [Design]",
               "DocumentMoniker": "C:\\Dev\\HamSatTune\\frmQTH.cs",
               "RelativeDocumentMoniker": "frmQTH.cs",
               "ToolTip": "C:\\Dev\\HamSatTune\\frmQTH.cs [Design]",
               "RelativeToolTip": "frmQTH.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-25T15:20:18.268Z",
-              "EditorCaption": " [Design]"
+              "WhenOpened": "2026-04-25T15:20:18.268Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "frmMain.cs [Design]",
               "DocumentMoniker": "C:\\Dev\\HamSatTune\\frmMain.cs",
               "RelativeDocumentMoniker": "frmMain.cs",
@@ -180,19 +114,102 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 2,
               "Title": "frmSplashScreen.cs [Design]",
               "DocumentMoniker": "C:\\Dev\\HamSatTune\\frmSplashScreen.cs",
               "RelativeDocumentMoniker": "frmSplashScreen.cs",
               "ToolTip": "C:\\Dev\\HamSatTune\\frmSplashScreen.cs [Design]",
               "RelativeToolTip": "frmSplashScreen.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-11T16:24:45.962Z",
-              "EditorCaption": " [Design]"
+              "WhenOpened": "2025-05-11T16:24:45.962Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "AssemblyInfo.cs",
+              "DocumentMoniker": "C:\\Dev\\HamSatTune\\Properties\\AssemblyInfo.cs",
+              "RelativeDocumentMoniker": "Properties\\AssemblyInfo.cs",
+              "ToolTip": "C:\\Dev\\HamSatTune\\Properties\\AssemblyInfo.cs",
+              "RelativeToolTip": "Properties\\AssemblyInfo.cs",
+              "ViewState": "AgIAABIAAAAAAAAAAAAAACMAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-19T09:28:48.81Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "frmCalibrate.cs",
+              "DocumentMoniker": "C:\\Dev\\HamSatTune\\frmCalibrate.cs",
+              "RelativeDocumentMoniker": "frmCalibrate.cs",
+              "ToolTip": "C:\\Dev\\HamSatTune\\frmCalibrate.cs",
+              "RelativeToolTip": "frmCalibrate.cs",
+              "ViewState": "AgIAAGUAAAAAAAAAAAAEwIQAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-25T13:39:53.408Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "frmMain.cs",
+              "DocumentMoniker": "C:\\Dev\\HamSatTune\\frmMain.cs",
+              "RelativeDocumentMoniker": "frmMain.cs",
+              "ToolTip": "C:\\Dev\\HamSatTune\\frmMain.cs",
+              "RelativeToolTip": "frmMain.cs",
+              "ViewState": "AgIAAAcCAAAAAAAAAAAewBUCAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-11T13:58:27.33Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "frmCalibrate.cs [Design]",
+              "DocumentMoniker": "C:\\Dev\\HamSatTune\\frmCalibrate.cs",
+              "RelativeDocumentMoniker": "frmCalibrate.cs",
+              "ToolTip": "C:\\Dev\\HamSatTune\\frmCalibrate.cs [Design]",
+              "RelativeToolTip": "frmCalibrate.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-24T17:06:39.7Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 9,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Dev\\HamSatTune\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Dev\\HamSatTune\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-11T14:17:39.843Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "frmSplashScreen.cs",
+              "DocumentMoniker": "C:\\Dev\\HamSatTune\\frmSplashScreen.cs",
+              "RelativeDocumentMoniker": "frmSplashScreen.cs",
+              "ToolTip": "C:\\Dev\\HamSatTune\\frmSplashScreen.cs",
+              "RelativeToolTip": "frmSplashScreen.cs",
+              "ViewState": "AgIAAAQAAAAAAAAAAAArwAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-11T16:37:11.279Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Globals.cs",
+              "DocumentMoniker": "C:\\Dev\\HamSatTune\\Globals.cs",
+              "RelativeDocumentMoniker": "Globals.cs",
+              "ToolTip": "C:\\Dev\\HamSatTune\\Globals.cs",
+              "RelativeToolTip": "Globals.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-25T16:32:50.677Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
               "Title": "frmQTH.cs",
               "DocumentMoniker": "C:\\Dev\\HamSatTune\\frmQTH.cs",
               "RelativeDocumentMoniker": "frmQTH.cs",
@@ -200,33 +217,7 @@
               "RelativeToolTip": "frmQTH.cs",
               "ViewState": "AgIAAAoAAAAAAAAAAAAEwBAAAAAXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-25T15:20:19.948Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "AssemblyInfo.cs",
-              "DocumentMoniker": "C:\\Dev\\HamSatTune\\Properties\\AssemblyInfo.cs",
-              "RelativeDocumentMoniker": "Properties\\AssemblyInfo.cs",
-              "ToolTip": "C:\\Dev\\HamSatTune\\Properties\\AssemblyInfo.cs",
-              "RelativeToolTip": "Properties\\AssemblyInfo.cs",
-              "ViewState": "AgIAABIAAAAAAAAAAAAAAB0AAAAQAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-19T09:28:48.81Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "OmniRig.cs",
-              "DocumentMoniker": "C:\\Dev\\HamSatTune\\OmniRig.cs",
-              "RelativeDocumentMoniker": "OmniRig.cs",
-              "ToolTip": "C:\\Dev\\HamSatTune\\OmniRig.cs",
-              "RelativeToolTip": "OmniRig.cs",
-              "ViewState": "AgIAAHsAAAAAAAAAAAAnwI0AAAAkAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-19T08:38:04.013Z"
+              "WhenOpened": "2026-04-25T15:20:19.948Z"
             }
           ]
         }

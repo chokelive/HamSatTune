@@ -250,11 +250,17 @@ namespace HamSatTune
             // Rig2 Status
             if (chk_ConnectRig2.Checked) 
             {
-                lbl_rigtype.Text = "Rig2: " + rig.rig2Type() + " " + rig.rig2Status();
+                var status2Text = "Rig2: " + rig.rig2Type() + " " + rig.rig2Status();
+                lbl_rig2type.Text = status2Text;
+                if (!string.IsNullOrEmpty(rig.rig2Status()) && rig.rig2Status().IndexOf("ONLINE", StringComparison.OrdinalIgnoreCase) >= 0)
+                    lbl_rig2type.ForeColor = Color.Green;
+                else
+                    lbl_rig2type.ForeColor = Color.Black;
             }
             else
             {
                 lbl_rig2type.Text = "No Rig2 Connected";
+                lbl_rig2type.ForeColor = Color.Black;
             }
 
 

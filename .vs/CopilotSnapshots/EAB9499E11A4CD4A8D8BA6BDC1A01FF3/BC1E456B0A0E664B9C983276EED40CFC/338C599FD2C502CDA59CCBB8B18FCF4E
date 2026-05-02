@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
 using System.Data;
-using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.IO;
@@ -242,7 +241,7 @@ namespace HamSatTune
             {
                 lbl_rigtype.Text = "Rig1: " + rig.rigType() + " " + rig.rigStatus();
             }
-            else
+            else if (chk_ConnectRig.Checked)
             {
                 lbl_rigtype.Text = "No Rig1 Connected";
             }
@@ -250,7 +249,7 @@ namespace HamSatTune
             // Rig2 Status
             if (chk_ConnectRig2.Checked) 
             {
-                lbl_rigtype.Text = "Rig2: " + rig.rig2Type() + " " + rig.rig2Status();
+                lbl_rig2type.Text = "Rig2: " + rig.rig2Type() + " " + rig.rig2Status();
             }
             else
             {
@@ -425,7 +424,7 @@ namespace HamSatTune
             }
 
             // Normal Doppler
-            else 
+            else
             {
 
                 txDoppler = -(int)observation.GetDopplerShift(startTxFreqWithOffset);
@@ -508,7 +507,7 @@ namespace HamSatTune
                 txt_TuneRx.Enabled = true;
                 bb_tune.Enabled = true;
                 chk_Simplex.Enabled = false;
-                lbl_rigtype.Text = "No Rig1 Connected";
+                lbl_rigtype.Text = "No Rig1 Connect";
             }
 
             SatelliteFrequencyReset = true;
@@ -532,7 +531,7 @@ namespace HamSatTune
                 txt_TuneRx.Enabled = true;
                 bb_tune.Enabled = true;
                 chk_Simplex.Enabled = false;
-                lbl_rig2type.Text = "No Rig2 Connected";
+                lbl_rig2type.Text = "No Rig2 Connect";
             }
         }
 
@@ -565,7 +564,6 @@ namespace HamSatTune
             }
         }
 
-        
         private void chk_Simplex_CheckedChanged(object sender, EventArgs e)
         {
             chk_Simplex.Checked = true;
@@ -593,32 +591,9 @@ namespace HamSatTune
             }
         }
 
-
-        // #############################################################################
-        // Open Doppler.sqf in editor when user click the button, so user can edit Doppler.sqf to add new satellite or adjust frequency and mode for existing satellite.
         private void bb_sqf_Click(object sender, EventArgs e)
         {
-            OpenDopplerInEditor();
-        }
 
-        // Open Doppler.sqf in the user's default editor (Notepad) for manual editing
-        private void OpenDopplerInEditor()
-        {
-            string path = "Doppler.sqf";
-            try
-            {
-                if (!File.Exists(path))
-                {
-                    // Create an empty file so editor can open it
-                    File.WriteAllText(path, "");
-                }
-
-                Process.Start("notepad.exe", path);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, "Cannot open Doppler.sqf: " + ex.Message);
-            }
         }
     }
 }

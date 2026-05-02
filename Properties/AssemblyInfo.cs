@@ -32,9 +32,11 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.5.0.0")]
-[assembly: AssemblyFileVersion("1.5.0.0")]
+[assembly: AssemblyVersion("1.6.0.0")]
+[assembly: AssemblyFileVersion("1.6.0.0")]
 
+// V1.6.0
+// - Add Doppler Prediction function to support user to predict the satellite signal frequency in advance and pre-tune their radio to get better signal
 
 // V1.5.0
 // - Add Rig Calibration function to support another radio and make it more flexible for user to calibrate their radio with satellite signal
