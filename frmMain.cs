@@ -61,6 +61,8 @@ namespace HamSatTune
 
 
         frmSplashScreen _splashScreen;
+        HamSatTune.Properties.frmMap mapForm;
+
         public frmMain()
         {
             InitializeComponent();
@@ -250,7 +252,7 @@ namespace HamSatTune
             // Rig2 Status
             if (chk_ConnectRig2.Checked) 
             {
-                lbl_rigtype.Text = "Rig2: " + rig.rig2Type() + " " + rig.rig2Status();
+                lbl_rig2type.Text = "Rig2: " + rig.rig2Type() + " " + rig.rig2Status();
             }
             else
             {
@@ -379,6 +381,7 @@ namespace HamSatTune
             rxDoppler = (int)observation.GetDopplerShift((double)startRxFreqWithOffset);
             tuneRxFreq = startRxFreqWithOffset + rxDoppler;
             lbl_RxFreq.Text = ((double)tuneRxFreq/1000).ToString("#0.#0");
+            Globals.CalculatedDownlinkHz = tuneRxFreq;
             //prevRxFreq = tuneRxFreq;
             if(chk_ConnectRig.Checked && rxFreqChangeFlag != true)
             {
@@ -440,6 +443,7 @@ namespace HamSatTune
                 txFreq = txFreq + ((int)sqf.downlinkFreq*1000 - startRxFreq);
             }
             lbl_TxFreq.Text = ((double)txFreq / 1000).ToString("#0.#0");
+            Globals.CalculatedUplinkHz = txFreq;
 
             // Set TX frequency to IC-705
             if (chk_ConnectRig.Checked)
@@ -468,6 +472,9 @@ namespace HamSatTune
                 lbl_downlinkMode.Text = sqf.downlinkMode;
             }
             lbl_uplinkMode.Text = sqf.uplinkMode;
+
+            Globals.LastTrackingUpdateTime = DateTime.Now;
+            Globals.TrackingUpdateNumber++;
 
             SatelliteFrequencyReset = false;
             SatelliteModeReset = false;
@@ -599,6 +606,17 @@ namespace HamSatTune
         private void bb_sqf_Click(object sender, EventArgs e)
         {
             OpenDopplerInEditor();
+        }
+
+        private void bb_map_Click(object sender, EventArgs e)
+        {
+            if (mapForm == null || mapForm.IsDisposed)
+            {
+                mapForm = new HamSatTune.Properties.frmMap();
+            }
+
+            mapForm.Show();
+            mapForm.BringToFront();
         }
 
         // Open Doppler.sqf in the user's default editor (Notepad) for manual editing

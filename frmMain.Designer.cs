@@ -60,6 +60,7 @@ namespace HamSatTune
             this.lbl_rig2type = new System.Windows.Forms.Label();
             this.bb_rigcal = new System.Windows.Forms.Button();
             this.bb_sqf = new System.Windows.Forms.Button();
+            this.bb_map = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // cbList
@@ -76,7 +77,7 @@ namespace HamSatTune
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(8, 40);
+            this.label1.Location = new System.Drawing.Point(9, 37);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(41, 13);
@@ -86,7 +87,7 @@ namespace HamSatTune
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(8, 15);
+            this.label2.Location = new System.Drawing.Point(9, 12);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(41, 13);
@@ -98,7 +99,7 @@ namespace HamSatTune
             this.lbl_TxFreq.AutoSize = true;
             this.lbl_TxFreq.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_TxFreq.ForeColor = System.Drawing.Color.Red;
-            this.lbl_TxFreq.Location = new System.Drawing.Point(49, 35);
+            this.lbl_TxFreq.Location = new System.Drawing.Point(44, 32);
             this.lbl_TxFreq.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbl_TxFreq.Name = "lbl_TxFreq";
             this.lbl_TxFreq.Size = new System.Drawing.Size(64, 20);
@@ -110,7 +111,7 @@ namespace HamSatTune
             this.lbl_RxFreq.AutoSize = true;
             this.lbl_RxFreq.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_RxFreq.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.lbl_RxFreq.Location = new System.Drawing.Point(50, 10);
+            this.lbl_RxFreq.Location = new System.Drawing.Point(44, 7);
             this.lbl_RxFreq.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbl_RxFreq.Name = "lbl_RxFreq";
             this.lbl_RxFreq.Size = new System.Drawing.Size(67, 20);
@@ -144,7 +145,7 @@ namespace HamSatTune
             this.lbl_downlinkMode.AutoSize = true;
             this.lbl_downlinkMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.lbl_downlinkMode.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_downlinkMode.Location = new System.Drawing.Point(151, 13);
+            this.lbl_downlinkMode.Location = new System.Drawing.Point(137, 10);
             this.lbl_downlinkMode.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbl_downlinkMode.Name = "lbl_downlinkMode";
             this.lbl_downlinkMode.Size = new System.Drawing.Size(52, 13);
@@ -156,7 +157,7 @@ namespace HamSatTune
             this.lbl_uplinkMode.AutoSize = true;
             this.lbl_uplinkMode.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.lbl_uplinkMode.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_uplinkMode.Location = new System.Drawing.Point(151, 40);
+            this.lbl_uplinkMode.Location = new System.Drawing.Point(138, 37);
             this.lbl_uplinkMode.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lbl_uplinkMode.Name = "lbl_uplinkMode";
             this.lbl_uplinkMode.Size = new System.Drawing.Size(52, 13);
@@ -165,7 +166,7 @@ namespace HamSatTune
             // 
             // txt_TuneRx
             // 
-            this.txt_TuneRx.Location = new System.Drawing.Point(235, 18);
+            this.txt_TuneRx.Location = new System.Drawing.Point(258, 19);
             this.txt_TuneRx.Margin = new System.Windows.Forms.Padding(2);
             this.txt_TuneRx.Name = "txt_TuneRx";
             this.txt_TuneRx.Size = new System.Drawing.Size(83, 20);
@@ -194,7 +195,7 @@ namespace HamSatTune
             // 
             // bb_tune
             // 
-            this.bb_tune.Location = new System.Drawing.Point(322, 18);
+            this.bb_tune.Location = new System.Drawing.Point(345, 19);
             this.bb_tune.Margin = new System.Windows.Forms.Padding(2);
             this.bb_tune.Name = "bb_tune";
             this.bb_tune.Size = new System.Drawing.Size(49, 20);
@@ -229,10 +230,10 @@ namespace HamSatTune
             // 
             // bb_freqResetCenter
             // 
-            this.bb_freqResetCenter.Location = new System.Drawing.Point(294, 150);
+            this.bb_freqResetCenter.Location = new System.Drawing.Point(183, 18);
             this.bb_freqResetCenter.Margin = new System.Windows.Forms.Padding(2);
             this.bb_freqResetCenter.Name = "bb_freqResetCenter";
-            this.bb_freqResetCenter.Size = new System.Drawing.Size(47, 21);
+            this.bb_freqResetCenter.Size = new System.Drawing.Size(50, 21);
             this.bb_freqResetCenter.TabIndex = 16;
             this.bb_freqResetCenter.Text = "Reset";
             this.bb_freqResetCenter.UseVisualStyleBackColor = true;
@@ -272,7 +273,7 @@ namespace HamSatTune
             // 
             this.lbl_qth.AutoSize = true;
             this.lbl_qth.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_qth.Location = new System.Drawing.Point(163, 65);
+            this.lbl_qth.Location = new System.Drawing.Point(158, 65);
             this.lbl_qth.Name = "lbl_qth";
             this.lbl_qth.Size = new System.Drawing.Size(46, 13);
             this.lbl_qth.TabIndex = 20;
@@ -281,7 +282,7 @@ namespace HamSatTune
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(134, 65);
+            this.label7.Location = new System.Drawing.Point(129, 65);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(33, 13);
             this.label7.TabIndex = 21;
@@ -322,7 +323,7 @@ namespace HamSatTune
             this.lbl_rigtype.AutoSize = true;
             this.lbl_rigtype.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_rigtype.ForeColor = System.Drawing.Color.Maroon;
-            this.lbl_rigtype.Location = new System.Drawing.Point(9, 91);
+            this.lbl_rigtype.Location = new System.Drawing.Point(11, 87);
             this.lbl_rigtype.Name = "lbl_rigtype";
             this.lbl_rigtype.Size = new System.Drawing.Size(33, 12);
             this.lbl_rigtype.TabIndex = 26;
@@ -358,7 +359,7 @@ namespace HamSatTune
             this.lbl_rig2type.AutoSize = true;
             this.lbl_rig2type.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_rig2type.ForeColor = System.Drawing.Color.Maroon;
-            this.lbl_rig2type.Location = new System.Drawing.Point(9, 103);
+            this.lbl_rig2type.Location = new System.Drawing.Point(11, 99);
             this.lbl_rig2type.Name = "lbl_rig2type";
             this.lbl_rig2type.Size = new System.Drawing.Size(33, 12);
             this.lbl_rig2type.TabIndex = 29;
@@ -385,11 +386,23 @@ namespace HamSatTune
             this.bb_sqf.UseVisualStyleBackColor = true;
             this.bb_sqf.Click += new System.EventHandler(this.bb_sqf_Click);
             // 
+            // bb_map
+            // 
+            this.bb_map.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bb_map.Location = new System.Drawing.Point(345, 150);
+            this.bb_map.Name = "bb_map";
+            this.bb_map.Size = new System.Drawing.Size(49, 21);
+            this.bb_map.TabIndex = 32;
+            this.bb_map.Text = "Map";
+            this.bb_map.UseVisualStyleBackColor = true;
+            this.bb_map.Click += new System.EventHandler(this.bb_map_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(410, 178);
+            this.Controls.Add(this.bb_map);
             this.Controls.Add(this.lbl_qth);
             this.Controls.Add(this.lbl_el);
             this.Controls.Add(this.lbl_az);
@@ -465,6 +478,7 @@ namespace HamSatTune
         private System.Windows.Forms.Label lbl_rig2type;
         private System.Windows.Forms.Button bb_rigcal;
         private System.Windows.Forms.Button bb_sqf;
+        private System.Windows.Forms.Button bb_map;
     }
 }
 

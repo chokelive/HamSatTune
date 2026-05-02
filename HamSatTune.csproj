@@ -39,6 +39,12 @@
     <ApplicationIcon>satellite.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GMap.NET.Core">
+      <HintPath>packages\GMap.NET.WindowsForms.1.7.5\lib\net40\GMap.NET.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="GMap.NET.WindowsForms">
+      <HintPath>packages\GMap.NET.WindowsForms.1.7.5\lib\net40\GMap.NET.WindowsForms.dll</HintPath>
+    </Reference>
     <Reference Include="M0JIV.MaidenheadLocator, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\M0JIV.MaidenheadLocator.1.0.2\lib\netstandard1.0\M0JIV.MaidenheadLocator.dll</HintPath>
     </Reference>
@@ -215,6 +221,12 @@
     <Compile Include="frmSplashScreen.Designer.cs">
       <DependentUpon>frmSplashScreen.cs</DependentUpon>
     </Compile>
+    <Compile Include="Properties\frmMap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Properties\frmMap.Designer.cs">
+      <DependentUpon>frmMap.cs</DependentUpon>
+    </Compile>
     <Compile Include="Sqf.cs" />
     <EmbeddedResource Include="frmCalibrate.resx">
       <DependentUpon>frmCalibrate.cs</DependentUpon>
@@ -224,6 +236,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmQTH.resx">
       <DependentUpon>frmQTH.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\frmMap.resx">
+      <DependentUpon>frmMap.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -255,6 +270,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="maps\WorldMap2.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="satellite.ico" />
     <Content Include="satellite.png" />
     <Content Include="tles.txt" />

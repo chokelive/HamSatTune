@@ -40,3 +40,7 @@ C:\Dev\HamSatTune\obj\Debug\HamSatTune.exe
 C:\Dev\HamSatTune\obj\Debug\HamSatTune.pdb
 C:\Dev\HamSatTune\obj\Debug\HamSatTune.exe.config
 C:\Dev\HamSatTune\obj\Debug\HamSatTune.frmCalibrate.resources
+C:\Dev\HamSatTune\obj\Debug\HamSatTune.Properties.frmMap.resources
+C:\Dev\HamSatTune\bin\Debug\GMap.NET.Core.dll
+C:\Dev\HamSatTune\bin\Debug\GMap.NET.WindowsForms.dll
+C:\Dev\HamSatTune\bin\Debug\maps\WorldMap2.bmp

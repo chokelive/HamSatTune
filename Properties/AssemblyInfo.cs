@@ -32,8 +32,11 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.6.0.0")]
-[assembly: AssemblyFileVersion("1.6.0.0")]
+[assembly: AssemblyVersion("1.7.0.0")]
+[assembly: AssemblyFileVersion("1.7.0.0")]
+
+// V1.7.0
+// - Add Satellite Map function to support user to check the satellite position and get the signal strength in real time, and also support user to check the satellite pass schedule in advance to prepare for the satellite communication
 
 // V1.6.0
 // - Add Doppler Prediction function to support user to predict the satellite signal frequency in advance and pre-tune their radio to get better signal
