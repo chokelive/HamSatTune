@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>GMap.NET.WindowsForms</id>
+        <version>1.7.5</version>
+        <title>GMap.NET - Great Maps for Windows Forms</title>
+        <authors>radioman @ FLAT EARTH</authors>
+        <licenseUrl>http://greatmaps.codeplex.com/license</licenseUrl>
+        <projectUrl>http://greatmaps.codeplex.com</projectUrl>
+        <iconUrl>http://s15.postimg.org/4igvvjhwn/logo99.png</iconUrl>
+        <requireLicenseAcceptance>true</requireLicenseAcceptance>
+        <description>GMap.NET is great and Powerful, Free, cross platform, open source .NET control. Enable use routing, geocoding, directions and maps from Coogle, Yahoo!, Bing, OpenStreetMap, ArcGIS, Pergo, SigPac, Yandex, Mapy.cz, Maps.lt, iKarte.lv, NearMap, OviMap, CloudMade, WikiMapia, MapQuest in Windows Forms &amp; Presentation, supports caching and runs on windows mobile!
+
+build: https://greatmaps.codeplex.com/SourceControl/changeset/68b2effa78c1</description>
+        <summary>Excellent toolkit for building Mapping Applications on Flat Earth!</summary>
+        <releaseNotes>The Earth is FLAT!</releaseNotes>
+        <tags>GMap, Map, Maps, gmaps, tiling, Control, mapkit, Mapping, GIS, Geo, Places, Elevation, Geocode, Directions, Flat, Earth</tags>
+    </metadata>
+</package>
