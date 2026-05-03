@@ -160,6 +160,7 @@ namespace HamSatTune.Properties
             {
                 qth = "NK93VT";
             }
+            string callsign = ConfigurationManager.AppSettings["Callsign"];
 
             double lat = M0JIV.MaidenheadLocator.MaidenheadLocatorEngine.GetLatLon(qth).Lat;
             double lon = M0JIV.MaidenheadLocator.MaidenheadLocatorEngine.GetLatLon(qth).Lon;
@@ -168,7 +169,7 @@ namespace HamSatTune.Properties
             groundStation = new GroundStation(new GeodeticCoordinate(Angle.FromDegrees(lat), Angle.FromDegrees(lon), 0));
             map.StationPosition = station;
             map.CenterPosition = station;
-            map.StationLabel = "QTH " + qth;
+            map.StationLabel = string.IsNullOrWhiteSpace(callsign) ? qth : callsign.Trim().ToUpperInvariant();
         }
 
         private void LoadTles()

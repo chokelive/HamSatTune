@@ -62,10 +62,19 @@ namespace HamSatTune
 
         frmSplashScreen _splashScreen;
         HamSatTune.Properties.frmMap mapForm;
+        frmNextPass nextPassForm;
+        frmRotorControl rotorControlForm;
+        RotorControlProcess mainRotor;
 
         public frmMain()
         {
             InitializeComponent();
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            mainRotor?.Dispose();
+            base.OnFormClosed(e);
         }
 
         private void frmMain_Load(object sender, EventArgs e)
@@ -112,6 +121,7 @@ namespace HamSatTune
             chk_Simplex.Enabled = false;
             lbl_rigtype.Text = "";
             lbl_rig2type.Text = "";
+            lbl_rotortype.Text = "";
 
         }
 
@@ -141,24 +151,6 @@ namespace HamSatTune
 
             var provider = new LocalTleProvider(true, "tles.txt");
 
-            // download Doppler.sqf from network.  
-            //try
-            //{
-            //    using (var client = new WebClient())
-            //    {
-            //        string tempFile = "Doppler_temp.sqf";
-            //        client.DownloadFile("https://raw.githubusercontent.com/chokelive/HamSatTune/main/Doppler.sqf", tempFile);
-            //        File.Copy(tempFile, "Doppler.sqf", true);
-            //        File.Delete(tempFile);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    //MessageBox.Show(this, "Error: " + ex.Message + "\nUsing existing Doppler.sqf file if available.");
-            //    _splashScreen.lbl_statusUpdate.Text = "Cannot update lasted SQF file from internet...";
-            //    Application.DoEvents(); // Allow UI to refresh
-            //    System.Threading.Thread.Sleep(3000);
-            //}
 
             // Get every TLE  
             tlelist = provider.GetTles();
@@ -363,6 +355,8 @@ namespace HamSatTune
             // Get AZ, EL
             az = observation.Azimuth.Degrees;
             el = observation.Elevation.Degrees;
+            Globals.CurrentAz = az;
+            Globals.CurrentEl = el;
 
             // reset frequency if Satellite AOS
             if (el_last<0 && el>0)
@@ -472,6 +466,8 @@ namespace HamSatTune
                 lbl_downlinkMode.Text = sqf.downlinkMode;
             }
             lbl_uplinkMode.Text = sqf.uplinkMode;
+
+            UpdateRotorTracking();
 
             Globals.LastTrackingUpdateTime = DateTime.Now;
             Globals.TrackingUpdateNumber++;
@@ -617,6 +613,116 @@ namespace HamSatTune
 
             mapForm.Show();
             mapForm.BringToFront();
+        }
+
+        private void bb_pass_Click(object sender, EventArgs e)
+        {
+            if (nextPassForm == null || nextPassForm.IsDisposed)
+            {
+                nextPassForm = new frmNextPass();
+            }
+
+            nextPassForm.Show();
+            nextPassForm.BringToFront();
+        }
+
+        private void bb_rotor_Click(object sender, EventArgs e)
+        {
+            if (rotorControlForm == null || rotorControlForm.IsDisposed)
+            {
+                rotorControlForm = new frmRotorControl();
+            }
+
+            rotorControlForm.Show();
+            rotorControlForm.BringToFront();
+        }
+
+        private void chk_AutoTrackRotor_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chk_AutoTrackRotor.Checked)
+            {
+                ConnectMainRotor();
+            }
+            else
+            {
+                DisconnectMainRotor();
+            }
+        }
+
+        private void ConnectMainRotor()
+        {
+            DisconnectMainRotor();
+
+            string portName = GetAppSetting("RotorPortName", "COM1");
+            int baudRate;
+            if (!int.TryParse(GetAppSetting("RotorBaudRate", "9600"), out baudRate))
+            {
+                baudRate = 9600;
+            }
+
+            double tolerance;
+            if (!double.TryParse(GetAppSetting("RotorToleranceThreshold", "2.0"), out tolerance))
+            {
+                tolerance = 2.0;
+            }
+
+            mainRotor = new RotorControlProcess(portName, baudRate, tolerance);
+            mainRotor.RotorUpdated += MainRotor_RotorUpdated;
+
+            string error = mainRotor.Connect();
+            if (string.IsNullOrWhiteSpace(error))
+            {
+                lbl_rotortype.Text = "Rotor: connected " + portName;
+            }
+            else
+            {
+                mainRotor.Dispose();
+                mainRotor = null;
+                chk_AutoTrackRotor.Checked = false;
+                lbl_rotortype.Text = "Rotor: " + error;
+            }
+        }
+
+        private void DisconnectMainRotor()
+        {
+            if (mainRotor != null)
+            {
+                mainRotor.Dispose();
+                mainRotor = null;
+            }
+
+            lbl_rotortype.Text = "Rotor: disconnected";
+        }
+
+        private void UpdateRotorTracking()
+        {
+            if (!chk_AutoTrackRotor.Checked || mainRotor == null || !mainRotor.IsConnected)
+            {
+                return;
+            }
+
+            mainRotor.SetPosition(az, el);
+        }
+
+        private void MainRotor_RotorUpdated()
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(MainRotor_RotorUpdated));
+                return;
+            }
+
+            if (mainRotor != null)
+            {
+                lbl_rotortype.Text = string.Format("Rotor: AZ {0:0.00} EL {1:0.00}", mainRotor.Az, mainRotor.El);
+            }
+        }
+
+        private string GetAppSetting(string key, string defaultValue)
+        {
+            Configuration config = ConfigurationManager.OpenExeConfiguration(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            KeyValueConfigurationElement setting = config.AppSettings.Settings[key];
+            return setting == null ? defaultValue : setting.Value;
         }
 
         // Open Doppler.sqf in the user's default editor (Notepad) for manual editing

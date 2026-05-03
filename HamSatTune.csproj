@@ -205,6 +205,15 @@
     <Compile Include="frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmNextPass.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmRotorControl.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmRotorControl.Designer.cs">
+      <DependentUpon>frmRotorControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmQTH.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -214,6 +223,7 @@
     <Compile Include="Globals.cs" />
     <Compile Include="OmniRig.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="RotorControlProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="frmSplashScreen.cs">
       <SubType>Form</SubType>
@@ -236,6 +246,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmQTH.resx">
       <DependentUpon>frmQTH.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmRotorControl.resx">
+      <DependentUpon>frmRotorControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\frmMap.resx">
       <DependentUpon>frmMap.cs</DependentUpon>

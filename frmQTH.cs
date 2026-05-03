@@ -14,6 +14,7 @@ namespace HamSatTune
     public partial class frmQTH : Form
     {
         string prevQTH = "";
+        string prevCallsign = "";
         public frmQTH()
         {
             InitializeComponent();
@@ -22,24 +23,44 @@ namespace HamSatTune
         private void frmQTH_Load(object sender, EventArgs e)
         {
             AppSettingsSection config = ConfigurationManager.OpenExeConfiguration(System.Reflection.Assembly.GetExecutingAssembly().Location).AppSettings;
-            prevQTH = config.Settings["QTH"].Value;
+            prevQTH = GetSetting(config, "QTH", "");
+            prevCallsign = GetSetting(config, "Callsign", "");
             txtQTH.Text = prevQTH;
+            txtCallsign.Text = prevCallsign;
         }
 
         private void bb_saveQTH_Click(object sender, EventArgs e)
         {
             Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            configuration.AppSettings.Settings["QTH"].Value = txtQTH.Text;
+            SetSetting(configuration, "QTH", txtQTH.Text.Trim().ToUpperInvariant());
+            SetSetting(configuration, "Callsign", txtCallsign.Text.Trim().ToUpperInvariant());
             configuration.Save(ConfigurationSaveMode.Minimal, true);
             ConfigurationManager.RefreshSection("appSettings");
 
-            if (prevQTH != txtQTH.Text)
+            if (prevQTH != txtQTH.Text || prevCallsign != txtCallsign.Text)
             {
                 this.DialogResult = DialogResult.OK;
             }
             else
             {
                 this.DialogResult = DialogResult.Cancel;
+            }
+        }
+
+        private string GetSetting(AppSettingsSection config, string key, string defaultValue)
+        {
+            return config.Settings[key] == null ? defaultValue : config.Settings[key].Value;
+        }
+
+        private void SetSetting(Configuration configuration, string key, string value)
+        {
+            if (configuration.AppSettings.Settings[key] == null)
+            {
+                configuration.AppSettings.Settings.Add(key, value);
+            }
+            else
+            {
+                configuration.AppSettings.Settings[key].Value = value;
             }
         }
     }

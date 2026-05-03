@@ -61,13 +61,17 @@ namespace HamSatTune
             this.bb_rigcal = new System.Windows.Forms.Button();
             this.bb_sqf = new System.Windows.Forms.Button();
             this.bb_map = new System.Windows.Forms.Button();
+            this.bb_pass = new System.Windows.Forms.Button();
+            this.bb_rotor = new System.Windows.Forms.Button();
+            this.chk_AutoTrackRotor = new System.Windows.Forms.CheckBox();
+            this.lbl_rotortype = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // cbList
             // 
             this.cbList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbList.FormattingEnabled = true;
-            this.cbList.Location = new System.Drawing.Point(12, 150);
+            this.cbList.Location = new System.Drawing.Point(12, 160);
             this.cbList.Margin = new System.Windows.Forms.Padding(2);
             this.cbList.Name = "cbList";
             this.cbList.Size = new System.Drawing.Size(192, 21);
@@ -166,7 +170,7 @@ namespace HamSatTune
             // 
             // txt_TuneRx
             // 
-            this.txt_TuneRx.Location = new System.Drawing.Point(258, 19);
+            this.txt_TuneRx.Location = new System.Drawing.Point(248, 19);
             this.txt_TuneRx.Margin = new System.Windows.Forms.Padding(2);
             this.txt_TuneRx.Name = "txt_TuneRx";
             this.txt_TuneRx.Size = new System.Drawing.Size(83, 20);
@@ -195,7 +199,7 @@ namespace HamSatTune
             // 
             // bb_tune
             // 
-            this.bb_tune.Location = new System.Drawing.Point(345, 19);
+            this.bb_tune.Location = new System.Drawing.Point(334, 19);
             this.bb_tune.Margin = new System.Windows.Forms.Padding(2);
             this.bb_tune.Name = "bb_tune";
             this.bb_tune.Size = new System.Drawing.Size(49, 20);
@@ -219,12 +223,12 @@ namespace HamSatTune
             // 
             // bb_omirigSetup
             // 
-            this.bb_omirigSetup.Location = new System.Drawing.Point(235, 126);
+            this.bb_omirigSetup.Location = new System.Drawing.Point(233, 141);
             this.bb_omirigSetup.Margin = new System.Windows.Forms.Padding(2);
             this.bb_omirigSetup.Name = "bb_omirigSetup";
-            this.bb_omirigSetup.Size = new System.Drawing.Size(55, 21);
+            this.bb_omirigSetup.Size = new System.Drawing.Size(48, 21);
             this.bb_omirigSetup.TabIndex = 15;
-            this.bb_omirigSetup.Text = "OmniRig";
+            this.bb_omirigSetup.Text = "RIG";
             this.bb_omirigSetup.UseVisualStyleBackColor = true;
             this.bb_omirigSetup.Click += new System.EventHandler(this.bb_omirigSetup_Click);
             // 
@@ -261,7 +265,7 @@ namespace HamSatTune
             // 
             // bb_qth
             // 
-            this.bb_qth.Location = new System.Drawing.Point(293, 126);
+            this.bb_qth.Location = new System.Drawing.Point(283, 141);
             this.bb_qth.Name = "bb_qth";
             this.bb_qth.Size = new System.Drawing.Size(48, 21);
             this.bb_qth.TabIndex = 19;
@@ -273,7 +277,7 @@ namespace HamSatTune
             // 
             this.lbl_qth.AutoSize = true;
             this.lbl_qth.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_qth.Location = new System.Drawing.Point(158, 65);
+            this.lbl_qth.Location = new System.Drawing.Point(165, 65);
             this.lbl_qth.Name = "lbl_qth";
             this.lbl_qth.Size = new System.Drawing.Size(46, 13);
             this.lbl_qth.TabIndex = 20;
@@ -282,7 +286,7 @@ namespace HamSatTune
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(129, 65);
+            this.label7.Location = new System.Drawing.Point(136, 65);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(33, 13);
             this.label7.TabIndex = 21;
@@ -291,7 +295,7 @@ namespace HamSatTune
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(12, 131);
+            this.label8.Location = new System.Drawing.Point(12, 141);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(44, 13);
             this.label8.TabIndex = 22;
@@ -300,7 +304,7 @@ namespace HamSatTune
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(233, 112);
+            this.label9.Location = new System.Drawing.Point(233, 128);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(37, 13);
             this.label9.TabIndex = 23;
@@ -312,9 +316,9 @@ namespace HamSatTune
             this.chk_Simplex.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chk_Simplex.Location = new System.Drawing.Point(236, 91);
             this.chk_Simplex.Name = "chk_Simplex";
-            this.chk_Simplex.Size = new System.Drawing.Size(174, 17);
+            this.chk_Simplex.Size = new System.Drawing.Size(165, 17);
             this.chk_Simplex.TabIndex = 25;
-            this.chk_Simplex.Text = "Simplex (VFO A RX, VFO B TX)";
+            this.chk_Simplex.Text = "Simplex (VFOA RX VFOB TX)";
             this.chk_Simplex.UseVisualStyleBackColor = true;
             this.chk_Simplex.CheckedChanged += new System.EventHandler(this.chk_Simplex_CheckedChanged);
             // 
@@ -335,7 +339,7 @@ namespace HamSatTune
             this.linkAbout.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.linkAbout.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.linkAbout.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.linkAbout.Location = new System.Drawing.Point(372, 2);
+            this.linkAbout.Location = new System.Drawing.Point(11, 193);
             this.linkAbout.Name = "linkAbout";
             this.linkAbout.Size = new System.Drawing.Size(38, 13);
             this.linkAbout.TabIndex = 27;
@@ -367,7 +371,7 @@ namespace HamSatTune
             // 
             // bb_rigcal
             // 
-            this.bb_rigcal.Location = new System.Drawing.Point(345, 126);
+            this.bb_rigcal.Location = new System.Drawing.Point(334, 141);
             this.bb_rigcal.Name = "bb_rigcal";
             this.bb_rigcal.Size = new System.Drawing.Size(49, 21);
             this.bb_rigcal.TabIndex = 30;
@@ -378,9 +382,9 @@ namespace HamSatTune
             // bb_sqf
             // 
             this.bb_sqf.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bb_sqf.Location = new System.Drawing.Point(234, 150);
+            this.bb_sqf.Location = new System.Drawing.Point(233, 163);
             this.bb_sqf.Name = "bb_sqf";
-            this.bb_sqf.Size = new System.Drawing.Size(55, 21);
+            this.bb_sqf.Size = new System.Drawing.Size(48, 21);
             this.bb_sqf.TabIndex = 31;
             this.bb_sqf.Text = "SQF";
             this.bb_sqf.UseVisualStyleBackColor = true;
@@ -389,7 +393,7 @@ namespace HamSatTune
             // bb_map
             // 
             this.bb_map.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bb_map.Location = new System.Drawing.Point(345, 150);
+            this.bb_map.Location = new System.Drawing.Point(334, 163);
             this.bb_map.Name = "bb_map";
             this.bb_map.Size = new System.Drawing.Size(49, 21);
             this.bb_map.TabIndex = 32;
@@ -397,11 +401,59 @@ namespace HamSatTune
             this.bb_map.UseVisualStyleBackColor = true;
             this.bb_map.Click += new System.EventHandler(this.bb_map_Click);
             // 
+            // bb_pass
+            // 
+            this.bb_pass.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bb_pass.Location = new System.Drawing.Point(283, 163);
+            this.bb_pass.Name = "bb_pass";
+            this.bb_pass.Size = new System.Drawing.Size(48, 21);
+            this.bb_pass.TabIndex = 33;
+            this.bb_pass.Text = "Next";
+            this.bb_pass.UseVisualStyleBackColor = true;
+            this.bb_pass.Click += new System.EventHandler(this.bb_pass_Click);
+            // 
+            // bb_rotor
+            // 
+            this.bb_rotor.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bb_rotor.Location = new System.Drawing.Point(233, 185);
+            this.bb_rotor.Name = "bb_rotor";
+            this.bb_rotor.Size = new System.Drawing.Size(48, 21);
+            this.bb_rotor.TabIndex = 34;
+            this.bb_rotor.Text = "Rotor";
+            this.bb_rotor.UseVisualStyleBackColor = true;
+            this.bb_rotor.Click += new System.EventHandler(this.bb_rotor_Click);
+            // 
+            // chk_AutoTrackRotor
+            // 
+            this.chk_AutoTrackRotor.AutoSize = true;
+            this.chk_AutoTrackRotor.Location = new System.Drawing.Point(236, 108);
+            this.chk_AutoTrackRotor.Name = "chk_AutoTrackRotor";
+            this.chk_AutoTrackRotor.Size = new System.Drawing.Size(99, 17);
+            this.chk_AutoTrackRotor.TabIndex = 36;
+            this.chk_AutoTrackRotor.Text = "Auto track rotor";
+            this.chk_AutoTrackRotor.UseVisualStyleBackColor = true;
+            this.chk_AutoTrackRotor.CheckedChanged += new System.EventHandler(this.chk_AutoTrackRotor_CheckedChanged);
+            // 
+            // lbl_rotortype
+            // 
+            this.lbl_rotortype.AutoSize = true;
+            this.lbl_rotortype.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_rotortype.ForeColor = System.Drawing.Color.Maroon;
+            this.lbl_rotortype.Location = new System.Drawing.Point(11, 111);
+            this.lbl_rotortype.Name = "lbl_rotortype";
+            this.lbl_rotortype.Size = new System.Drawing.Size(66, 12);
+            this.lbl_rotortype.TabIndex = 35;
+            this.lbl_rotortype.Text = "Rotor: stopped";
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(410, 178);
+            this.ClientSize = new System.Drawing.Size(401, 213);
+            this.Controls.Add(this.lbl_rotortype);
+            this.Controls.Add(this.chk_AutoTrackRotor);
+            this.Controls.Add(this.bb_rotor);
+            this.Controls.Add(this.bb_pass);
             this.Controls.Add(this.bb_map);
             this.Controls.Add(this.lbl_qth);
             this.Controls.Add(this.lbl_el);
@@ -479,6 +531,10 @@ namespace HamSatTune
         private System.Windows.Forms.Button bb_rigcal;
         private System.Windows.Forms.Button bb_sqf;
         private System.Windows.Forms.Button bb_map;
+        private System.Windows.Forms.Button bb_pass;
+        private System.Windows.Forms.Button bb_rotor;
+        private System.Windows.Forms.CheckBox chk_AutoTrackRotor;
+        private System.Windows.Forms.Label lbl_rotortype;
     }
 }
 

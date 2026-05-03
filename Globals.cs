@@ -6,6 +6,8 @@ namespace HamSatTune
         public static Sqf CurrentSqf;
         public static int CalculatedDownlinkHz;
         public static int CalculatedUplinkHz;
+        public static double CurrentAz;
+        public static double CurrentEl;
         public static System.DateTime LastTrackingUpdateTime;
         public static int TrackingUpdateNumber;
     }
