@@ -206,13 +206,9 @@ namespace HamSatTune
             // For smooth mode change, We will reset frequency when Sattellite and Frequency is difference only.
             if (sqf_last.sateName == sqf.sateName)
             {
-                if(sqf_last.downlinkFreq != sqf.downlinkFreq)
+                if(sqf_last.downlinkFreq != sqf.downlinkFreq || sqf_last.uplinkFreq != sqf.uplinkFreq)
                 {
-                    if(sqf_last.uplinkFreq != sqf.uplinkFreq)
-                    {
-                        SatelliteFrequencyReset = true;
-                    }
-
+                    SatelliteFrequencyReset = true;
                 }
             }else if(sqf_last.sateName != sqf.sateName)
             {
@@ -255,15 +251,7 @@ namespace HamSatTune
             // Doppler Calculation
             if ( SatelliteFrequencyReset==true) // Only 1st time do this scope
             {
-                startRxFreq = (int)sqf.downlinkFreq * 1000;
-                startTxFreq = (int)sqf.uplinkFreq * 1000;
-                prevRxFreq = (int)sqf.downlinkFreq * 1000;
-                tuneRxFreq = (int)sqf.downlinkFreq * 1000;
-
-                if (sqf.downlinkMode == "CW")
-                {
-                    startRxFreq = startRxFreq - 1000; // and adjust frequency to lower 1 khz to ensure RX signal is covered.
-                }
+                ResetDopplerBase();
             }
 
             if (SatelliteModeReset == true) // Only 1st time do this scope
@@ -340,15 +328,6 @@ namespace HamSatTune
             }
             
 
-            // free tune option
-            int freetuneOffset = Math.Abs(tuneRxFreq - prevRxFreq);
-            if(freetuneOffset>50)  // Ignore some small rig round up frequency
-            {
-                rxFreqChangeFlag = true;
-                Console.WriteLine((tuneRxFreq - prevRxFreq).ToString());
-                startRxFreq = tuneRxFreq - rxDoppler - (int)sqf.downlinkOffset;
-            }
-
             Satellite sat = new Satellite(TleUse);
             var observation = groundStation.Observe(sat, DateTime.UtcNow);
 
@@ -361,7 +340,7 @@ namespace HamSatTune
             // reset frequency if Satellite AOS
             if (el_last<0 && el>0)
             {
-                SatelliteFrequencyReset = true;
+                ResetDopplerBase();
                 SatelliteModeReset = true;
             }
             el_last = el;
@@ -370,9 +349,24 @@ namespace HamSatTune
             lbl_az.Text = az.ToString("#0.#0°");
             lbl_el.Text = el.ToString("#0.#0°");
 
-            // Display Frequency
+            // Calculate current downlink Doppler before checking free-tune.
+            // Near high elevation the Doppler slope is steep, so using last tick's shift can re-baseline incorrectly.
             startRxFreqWithOffset = startRxFreq + (int)sqf.downlinkOffset; // add offset for user to adjust downlink frequency, avoid some radio cannot set exact frequency issue.
             rxDoppler = (int)observation.GetDopplerShift((double)startRxFreqWithOffset);
+
+            // free tune option
+            int freetuneOffset = Math.Abs(tuneRxFreq - prevRxFreq);
+            int freetuneThreshold = el > 30 ? 250 : 50; // high elevation Doppler changes quickly, so ignore small CAT/readback drift.
+            if(freetuneOffset > freetuneThreshold)
+            {
+                rxFreqChangeFlag = true;
+                Console.WriteLine((tuneRxFreq - prevRxFreq).ToString());
+                startRxFreq = tuneRxFreq - rxDoppler - (int)sqf.downlinkOffset;
+                startRxFreqWithOffset = startRxFreq + (int)sqf.downlinkOffset;
+                rxDoppler = (int)observation.GetDopplerShift((double)startRxFreqWithOffset);
+            }
+
+            // Display Frequency
             tuneRxFreq = startRxFreqWithOffset + rxDoppler;
             lbl_RxFreq.Text = ((double)tuneRxFreq/1000).ToString("#0.#0");
             Globals.CalculatedDownlinkHz = tuneRxFreq;
@@ -476,6 +470,19 @@ namespace HamSatTune
             SatelliteModeReset = false;
             rxFreqChangeFlag = false;
 
+        }
+
+        private void ResetDopplerBase()
+        {
+            startRxFreq = (int)sqf.downlinkFreq * 1000;
+            startTxFreq = (int)sqf.uplinkFreq * 1000;
+            prevRxFreq = (int)sqf.downlinkFreq * 1000;
+            tuneRxFreq = (int)sqf.downlinkFreq * 1000;
+
+            if (sqf.downlinkMode == "CW")
+            {
+                startRxFreq = startRxFreq - 1000; // adjust frequency lower 1 kHz so RX signal is covered.
+            }
         }
 
         private void bb_tune_Click(object sender, EventArgs e)
