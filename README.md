@@ -10,7 +10,8 @@ by Choke E29AHU
 ---
 
 ## 🖼️ Preview
-<img width="1206" height="844" alt="image" src="https://github.com/user-attachments/assets/c390dc19-81d9-4711-985f-75a061df2266" />
+<img width="1163" height="783" alt="image" src="https://github.com/user-attachments/assets/6436dd57-79e9-4772-b4e1-69a26c019ccd" />
+
 
 ---
 
