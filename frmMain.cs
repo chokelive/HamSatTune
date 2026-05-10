@@ -27,6 +27,7 @@ namespace HamSatTune
         // Global Variable
 
         int updateInterval = 1000; //ms
+        const int Ft4FastTimerInterval = 250; //ms
 
         Dictionary<int, Tle> tlelist;
         Tle TleUse;
@@ -159,7 +160,10 @@ namespace HamSatTune
         private void loadSqf()
         {
             sqflist = new Dictionary<int, Sqf>();
-            int i = 0;
+            cbList.Items.Clear();
+
+            List<Sqf> sortedSqfList = new List<Sqf>();
+
             foreach(string line in File.ReadLines(@"Doppler.sqf"))
             {
                 string[] element = line.Split(',');
@@ -174,10 +178,21 @@ namespace HamSatTune
                 _sqf.uplinkOffset = Convert.ToDouble(element[7]);
                 _sqf.comment = element[8];
 
+                sortedSqfList.Add(_sqf);
+            }
+
+            sortedSqfList = sortedSqfList
+                .OrderBy(item => item.sateName)
+                .ThenBy(item => item.comment)
+                .ToList();
+
+            for (int i = 0; i < sortedSqfList.Count; i++)
+            {
+                Sqf _sqf = sortedSqfList[i];
                 sqflist.Add(i, _sqf);
                 cbList.Items.Add(_sqf.sateName + " " + _sqf.comment);
-                i++;
             }
+
         }
 
         private void cbList_SelectedIndexChanged(object sender, EventArgs e)
@@ -314,16 +329,10 @@ namespace HamSatTune
             // Get rig Rx Frequency
             if (chk_ConnectRig.Checked && SatelliteFrequencyReset!=true )
             {
-                if (rig.getTxStatus() != true)
+                int rigRxFreq;
+                if (TryGetRigRxFrequency(out rigRxFreq))
                 {
-                    if (rig.rigType() == "FT-817" || rig.rigType() == "FT-857" || rig.rigType() == "FT-897" || rig.rigType() == "IC-756 Pro")
-                    {
-                        tuneRxFreq = rig.getFreq();
-                    }
-                    else
-                    {
-                        tuneRxFreq = rig.getFreqA();
-                    }
+                    tuneRxFreq = rigRxFreq;
                 }
             }
             
@@ -336,6 +345,7 @@ namespace HamSatTune
             el = observation.Elevation.Degrees;
             Globals.CurrentAz = az;
             Globals.CurrentEl = el;
+            UpdateTrackingIntervalForPass();
 
             // reset frequency if Satellite AOS
             if (el_last<0 && el>0)
@@ -378,17 +388,27 @@ namespace HamSatTune
                     if (rig.rigType() == "FT-817" || rig.rigType() == "FT-857" || rig.rigType() == "FT-897" || rig.rigType() == "IC-756 Pro")
                     {
                         rig.setFreq(tuneRxFreq);
-                        prevRxFreq = rig.getFreq();
+                        int rigRxFreq;
+                        prevRxFreq = TryGetRigRxFrequency(out rigRxFreq) ? rigRxFreq : tuneRxFreq;
                     }
                     //else if (rig.rigType() == "IC-756 Pro")
                     //{
                     //    rig.setFreq(tuneRxFreq);
                     //    prevRxFreq = rig.getFreq();
                     //}
+                    else if (rig.rigType().Contains("IC-9700"))
+                    { 
+                        rig.setVFOA();
+                        rig.setFreqA(tuneRxFreq);
+                        int rigRxFreq;
+                        prevRxFreq = TryGetRigRxFrequency(out rigRxFreq) ? rigRxFreq : tuneRxFreq;
+                    }
+
                     else
                     {
                         rig.setFreqA(tuneRxFreq); // add for support another radio.
-                        prevRxFreq = rig.getFreqA();
+                        int rigRxFreq;
+                        prevRxFreq = TryGetRigRxFrequency(out rigRxFreq) ? rigRxFreq : tuneRxFreq;
                     }
                                       
                 }
@@ -433,13 +453,19 @@ namespace HamSatTune
             lbl_TxFreq.Text = ((double)txFreq / 1000).ToString("#0.#0");
             Globals.CalculatedUplinkHz = txFreq;
 
-            // Set TX frequency to IC-705
+            // Set TX frequency to IC-705 or IC-9700
             if (chk_ConnectRig.Checked)
             {
                 //if (rig.rigType() != "FT-817")
                 if (rig.rigType().Contains("IC-705"))
                 {
                     rig.setFreqB(txFreq);
+                }
+                else if (rig.rigType().Contains("IC-9700")) // this model need to control Sub Band
+                {
+                    rig.setVFOB();
+                    rig.setFreq(txFreq);
+                    rig.setVFOA();
                 }
 
                 // Set TX for Radio 2
@@ -470,6 +496,52 @@ namespace HamSatTune
             SatelliteModeReset = false;
             rxFreqChangeFlag = false;
 
+        }
+
+        private bool TryGetRigRxFrequency(out int frequency)
+        {
+            frequency = 0;
+
+            if (rig.getTxStatus())
+            {
+                return false;
+            }
+
+            if (rig.rigType().Contains("IC-9700"))
+            {
+                rig.setVFOA();
+            }
+
+            if (rig.rigType() == "FT-817" || rig.rigType() == "FT-857" || rig.rigType() == "FT-897" || rig.rigType() == "IC-756 Pro")
+            {
+                frequency = rig.getFreq();
+            }
+            else
+            {
+                frequency = rig.getFreqA();
+            }
+
+            return IsValidFrequency(frequency);
+        }
+
+        private bool IsValidFrequency(int frequency)
+        {
+            return frequency >= 1000000;
+        }
+
+        private void UpdateTrackingIntervalForPass()
+        {
+            int interval = IsFt4Mode() ? Ft4FastTimerInterval : updateInterval;
+
+            if (trackingTimer.Interval != interval)
+            {
+                trackingTimer.Interval = interval;
+            }
+        }
+
+        private bool IsFt4Mode()
+        {
+            return !string.IsNullOrEmpty(sqf.comment) && sqf.comment.Contains("FT4");
         }
 
         private void ResetDopplerBase()
@@ -505,7 +577,11 @@ namespace HamSatTune
             if(chk_ConnectRig.Checked)
             {
                 rig.rigConnect();
-                rig.setSplit();
+
+                if (!rig.rigType().Contains("IC-9700"))  // Ignore split setting for IC-9700 and this model has satellite mode.
+                {
+                    rig.setSplit();
+                }
                 txt_TuneRx.Enabled = false;
                 bb_tune.Enabled = false;
                 chk_Simplex.Enabled = true;

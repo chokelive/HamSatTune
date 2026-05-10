@@ -39,12 +39,6 @@
     <ApplicationIcon>satellite.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GMap.NET.Core">
-      <HintPath>packages\GMap.NET.WindowsForms.1.7.5\lib\net40\GMap.NET.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="GMap.NET.WindowsForms">
-      <HintPath>packages\GMap.NET.WindowsForms.1.7.5\lib\net40\GMap.NET.WindowsForms.dll</HintPath>
-    </Reference>
     <Reference Include="M0JIV.MaidenheadLocator, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\M0JIV.MaidenheadLocator.1.0.2\lib\netstandard1.0\M0JIV.MaidenheadLocator.dll</HintPath>
     </Reference>
@@ -283,9 +277,15 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="maps\WorldMap.jpg" />
+    <Content Include="maps\WorldMap1.bmp" />
     <Content Include="maps\WorldMap2.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="maps\WorldMap2.jpg" />
+    <Content Include="maps\WorldMap2_.bmp" />
+    <Content Include="maps\WorldMap3.jpg" />
+    <Content Include="maps\WorldMap4.jpg" />
     <Content Include="satellite.ico" />
     <Content Include="satellite.png" />
     <Content Include="tles.txt" />

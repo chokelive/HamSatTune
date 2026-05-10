@@ -151,12 +151,12 @@ namespace HamSatTune
 
         public void setModeCW()
         {
-            rig.Mode = RigParamX.PM_CW_U;
+            rig.Mode = RigParamX.PM_CW_L;
         }
 
         public void setModeCW_Rig2()
         {
-            rig2.Mode = RigParamX.PM_CW_U;
+            rig2.Mode = RigParamX.PM_CW_L;
         }
 
         public void setModeCW_RX() // Setup RX USB for CW for wide bandwidth receive
