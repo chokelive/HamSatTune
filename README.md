@@ -30,11 +30,11 @@ https://raw.githubusercontent.com/chokelive/HamSatTune/main/Doppler.sqf
 ---
 
 ## 📻 Tested Radios
-- Yaesu FT-817  
-- Icom IC-705  
+- Yaesu FT-817, FT-897
+- Icom IC-705, IC-756 Pro, IC-9700
+
 
 > หากมีรุ่นอื่น ๆ และต้องการทดสอบ สามารถแจ้งเข้ามาได้ครับ  
-
 ---
 
 ## ⚙️ Installation
