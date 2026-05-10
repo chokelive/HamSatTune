@@ -5,7 +5,7 @@ by Choke E29AHU
 ---
 
 ## 📥 Latest Release
-👉 [Version 1.7.0 Download](https://github.com/chokelive/HamSatTune/releases/download/V1.7.0/HamSatTune.V1.7.0.zip)
+👉 [Download Latest Version](https://github.com/chokelive/HamSatTune/releases/latest)
 
 ---
 
