@@ -46,7 +46,9 @@ https://raw.githubusercontent.com/chokelive/HamSatTune/main/Doppler.sqf
    (แนะนำ: `C:\HamSatTune`)  
 
 3. ติดตั้ง **OmniRig V1.2** (ใช้สำหรับควบคุมวิทยุ)  
-   👉 http://dxatlas.com/omnirig/  
+   👉 http://dxatlas.com/OmniRig/Files/OmniRig.zip
+
+4. ก๊อบปี้ folder ที่ชื่อ Rigs อยู่ใน Folder OmniRigs ไปวางทับไว้ที่ C:\Program Files (x86)\Afreet\OmniRig    
 
 4. ติดตั้ง **.NET Framework 4.7.2 หรือสูงกว่า**  
    👉 https://dotnet.microsoft.com/en-us/download/dotnet-framework/net472  
