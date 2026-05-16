@@ -202,6 +202,30 @@
     <Compile Include="frmNextPass.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmManualTleManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmManualTleManager.Designer.cs">
+      <DependentUpon>frmManualTleManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmSqfManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmSqfManager.Designer.cs">
+      <DependentUpon>frmSqfManager.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmTleEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmTleEditor.Designer.cs">
+      <DependentUpon>frmTleEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmTleTextViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmTleTextViewer.Designer.cs">
+      <DependentUpon>frmTleTextViewer.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmRotorControl.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -243,6 +267,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmRotorControl.resx">
       <DependentUpon>frmRotorControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmTleEditor.resx">
+      <DependentUpon>frmTleEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\frmMap.resx">
       <DependentUpon>frmMap.cs</DependentUpon>

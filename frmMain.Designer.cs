@@ -65,6 +65,7 @@ namespace HamSatTune
             this.bb_rotor = new System.Windows.Forms.Button();
             this.chk_AutoTrackRotor = new System.Windows.Forms.CheckBox();
             this.lbl_rotortype = new System.Windows.Forms.Label();
+            this.bb_tle = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // cbList
@@ -423,6 +424,17 @@ namespace HamSatTune
             this.bb_rotor.UseVisualStyleBackColor = true;
             this.bb_rotor.Click += new System.EventHandler(this.bb_rotor_Click);
             // 
+            // bb_tle
+            // 
+            this.bb_tle.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.bb_tle.Location = new System.Drawing.Point(283, 185);
+            this.bb_tle.Name = "bb_tle";
+            this.bb_tle.Size = new System.Drawing.Size(48, 21);
+            this.bb_tle.TabIndex = 37;
+            this.bb_tle.Text = "TLE";
+            this.bb_tle.UseVisualStyleBackColor = true;
+            this.bb_tle.Click += new System.EventHandler(this.bb_tle_Click);
+            // 
             // chk_AutoTrackRotor
             // 
             this.chk_AutoTrackRotor.AutoSize = true;
@@ -452,6 +464,7 @@ namespace HamSatTune
             this.ClientSize = new System.Drawing.Size(401, 213);
             this.Controls.Add(this.lbl_rotortype);
             this.Controls.Add(this.chk_AutoTrackRotor);
+            this.Controls.Add(this.bb_tle);
             this.Controls.Add(this.bb_rotor);
             this.Controls.Add(this.bb_pass);
             this.Controls.Add(this.bb_map);
@@ -535,6 +548,7 @@ namespace HamSatTune
         private System.Windows.Forms.Button bb_rotor;
         private System.Windows.Forms.CheckBox chk_AutoTrackRotor;
         private System.Windows.Forms.Label lbl_rotortype;
+        private System.Windows.Forms.Button bb_tle;
     }
 }
 

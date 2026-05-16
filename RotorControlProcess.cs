@@ -86,7 +86,6 @@ namespace HamSatTune
 
             WriteCommand("X1");
             WriteCommand(string.Format(CultureInfo.InvariantCulture, "W{0:000} {1:000}", az, el));
-            WriteCommand("X4");
         }
 
         public void Up()

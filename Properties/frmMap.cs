@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -16,6 +17,9 @@ namespace HamSatTune.Properties
 {
     public partial class frmMap : Form
     {
+        private const string TleFileName = "tles.txt";
+        private const string ManualTleFileName = "manual_tles.txt";
+
         private readonly Panel headerPanel = new Panel();
         private readonly WorldMapPanel map = new WorldMapPanel();
         private readonly Label lblAzEl = new Label();
@@ -23,11 +27,14 @@ namespace HamSatTune.Properties
         private readonly Label lblSatellite = new Label();
         private readonly Label lblDownlink = new Label();
         private readonly Label lblUplink = new Label();
+        private readonly Label lblNextSatellite = new Label();
         private readonly Timer mapTimer = new Timer();
 
         private Dictionary<int, Tle> tleList = new Dictionary<int, Tle>();
         private GroundStation groundStation;
         private int lastTrackingUpdateNumber = -1;
+        private NextSatelliteInfo nextSatelliteInfo;
+        private DateTime lastNextSatelliteRefreshUtc = DateTime.MinValue;
 
         public frmMap()
         {
@@ -64,6 +71,17 @@ namespace HamSatTune.Properties
             map.Dock = DockStyle.Fill;
             map.LoadBackgroundImage(Path.Combine("maps", "WorldMap3.jpg"));
             Controls.Add(map);
+
+            lblNextSatellite.ForeColor = Color.White;
+            lblNextSatellite.BackColor = Color.Transparent;
+            lblNextSatellite.Font = new Font("Arial", 9, FontStyle.Bold);
+            lblNextSatellite.AutoSize = false;
+            lblNextSatellite.TextAlign = ContentAlignment.MiddleRight;
+            lblNextSatellite.Padding = new Padding(0);
+            lblNextSatellite.Size = new Size(230, 20);
+            map.Controls.Add(lblNextSatellite);
+            lblNextSatellite.Parent = map;
+            lblNextSatellite.BringToFront();
 
             headerPanel.Dock = DockStyle.Top;
             headerPanel.BackColor = Color.FromArgb(12, 43, 69);
@@ -138,6 +156,7 @@ namespace HamSatTune.Properties
             lblSatellite.Location = new Point(left, Math.Max(3, (int)(7 * scale)));
             lblAzEl.Location = new Point(left, Math.Max(18, (int)(30 * scale)));
             PositionHeaderLabels();
+            PositionNextSatelliteLabel();
         }
 
         private void SetLabelFont(Label label, double size)
@@ -174,14 +193,29 @@ namespace HamSatTune.Properties
 
         private void LoadTles()
         {
-            if (!File.Exists("tles.txt"))
+            if (!File.Exists(TleFileName) && !File.Exists(ManualTleFileName))
             {
-                lblSatellite.Text = "Missing tles.txt";
+                lblSatellite.Text = "Missing TLE file";
                 return;
             }
 
-            LocalTleProvider provider = new LocalTleProvider(true, "tles.txt");
-            tleList = provider.GetTles();
+            tleList = new Dictionary<int, Tle>();
+            MergeTleFile(TleFileName);
+            MergeTleFile(ManualTleFileName);
+        }
+
+        private void MergeTleFile(string path)
+        {
+            if (!File.Exists(path))
+            {
+                return;
+            }
+
+            LocalTleProvider provider = new LocalTleProvider(true, path);
+            foreach (KeyValuePair<int, Tle> item in provider.GetTles())
+            {
+                tleList[item.Key] = item.Value;
+            }
         }
 
         private void MapTimer_Tick(object sender, EventArgs e)
@@ -204,6 +238,7 @@ namespace HamSatTune.Properties
                 lblDownlink.Text = "";
                 lblUplink.Text = "";
                 lblTime.Text = GetTrackingTimeText();
+                lblNextSatellite.Text = "Next: --";
                 map.Invalidate();
                 return;
             }
@@ -221,14 +256,143 @@ namespace HamSatTune.Properties
             map.SatelliteLabel = tle.Name;
             map.GroundTrack = BuildGroundTrack(sat, now);
             map.Footprint = satGeo.GetFootprintBoundary(90).Select(ToGeoPoint).ToList();
+            UpdateNextSatellite(now, tle.Name);
 
             lblSatellite.Text = tle.Name;
             lblAzEl.Text = string.Format("Az {0:0.00}°   El {1:0.00}°", observation.Azimuth.Degrees, observation.Elevation.Degrees);
             SetFrequencyText();
             lblTime.Text = GetTrackingTimeText() + " (LOC)";
             PositionHeaderLabels();
+            PositionNextSatelliteLabel();
 
             map.Invalidate();
+        }
+
+        private void UpdateNextSatellite(DateTime nowUtc, string selectedSatelliteName)
+        {
+            if (nextSatelliteInfo == null || (nowUtc - lastNextSatelliteRefreshUtc).TotalSeconds >= 30)
+            {
+                nextSatelliteInfo = RefreshNextSatelliteInfo(nowUtc, selectedSatelliteName);
+                lastNextSatelliteRefreshUtc = nowUtc;
+            }
+
+            if (nextSatelliteInfo == null)
+            {
+                lblNextSatellite.Text = "Next: --";
+                return;
+            }
+
+            Satellite nextSatellite = new Satellite(nextSatelliteInfo.Tle);
+            GeodeticCoordinate nextGeo = nextSatellite.Predict(nowUtc).ToGeodetic();
+            lblNextSatellite.Text = string.Format("Next: {0}  {1}", nextSatelliteInfo.Name, FormatUntil(nextSatelliteInfo.Pass, nowUtc));
+        }
+
+        private NextSatelliteInfo RefreshNextSatelliteInfo(DateTime nowUtc, string selectedSatelliteName)
+        {
+            if (groundStation == null || tleList.Count == 0 || !File.Exists("Doppler.sqf"))
+            {
+                return null;
+            }
+
+            DateTime endUtc = nowUtc.AddHours(24);
+            List<NextSatelliteInfo> candidates = new List<NextSatelliteInfo>();
+            HashSet<string> addedSatellites = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (Sqf sqf in LoadSqfList())
+            {
+                if (string.IsNullOrWhiteSpace(sqf.sateName) || !addedSatellites.Add(sqf.sateName))
+                {
+                    continue;
+                }
+
+                if (string.Equals(sqf.sateName, selectedSatelliteName, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                Tle tle = tleList.Values.FirstOrDefault(item => string.Equals(item.Name, sqf.sateName, StringComparison.OrdinalIgnoreCase));
+                if (tle == null)
+                {
+                    continue;
+                }
+
+                NextSatelliteInfo info;
+                if (TryBuildNextSatelliteInfo(sqf.sateName, tle, nowUtc, endUtc, out info))
+                {
+                    candidates.Add(info);
+                }
+            }
+
+            return candidates.OrderBy(item => item.Pass.Start).FirstOrDefault();
+        }
+
+        private bool TryBuildNextSatelliteInfo(string name, Tle tle, DateTime nowUtc, DateTime endUtc, out NextSatelliteInfo info)
+        {
+            info = null;
+
+            try
+            {
+                Satellite satellite = new Satellite(tle);
+                List<SatelliteVisibilityPeriod> passes = groundStation.Observe(
+                    satellite,
+                    nowUtc,
+                    endUtc,
+                    TimeSpan.FromSeconds(30),
+                    Angle.Zero,
+                    true,
+                    false,
+                    0);
+
+                SatelliteVisibilityPeriod pass = passes.FirstOrDefault(item => item.MaxElevation.Degrees > 0);
+                if (pass == null)
+                {
+                    return false;
+                }
+
+                info = new NextSatelliteInfo
+                {
+                    Name = name,
+                    Tle = tle,
+                    Pass = pass
+                };
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private List<Sqf> LoadSqfList()
+        {
+            List<Sqf> list = new List<Sqf>();
+            if (!File.Exists("Doppler.sqf"))
+            {
+                return list;
+            }
+
+            foreach (string line in File.ReadLines("Doppler.sqf"))
+            {
+                Sqf sqf;
+                if (TryParseSqf(line, out sqf))
+                {
+                    list.Add(sqf);
+                }
+            }
+
+            return list;
+        }
+
+        private string FormatUntil(SatelliteVisibilityPeriod pass, DateTime nowUtc)
+        {
+            TimeSpan until = pass.Start <= nowUtc ? pass.End - nowUtc : pass.Start - nowUtc;
+            if (until < TimeSpan.Zero)
+            {
+                until = TimeSpan.Zero;
+            }
+
+            int totalHours = (int)Math.Floor(until.TotalHours);
+            return string.Format("-{0:00}:{1:00}:{2:00}", totalHours, until.Minutes, until.Seconds);
         }
 
         private Tle GetSelectedTle()
@@ -301,6 +465,14 @@ namespace HamSatTune.Properties
             PositionFrequencyLabels();
         }
 
+        private void PositionNextSatelliteLabel()
+        {
+            int margin = 4;
+            lblNextSatellite.Location = new Point(
+                Math.Max(margin, map.ClientSize.Width - lblNextSatellite.Width - margin),
+                Math.Max(margin, map.ClientSize.Height - lblNextSatellite.Height - margin));
+        }
+
         private bool TryGetSelectedSqf(out Sqf selectedSqf)
         {
             selectedSqf = Globals.CurrentSqf;
@@ -342,10 +514,10 @@ namespace HamSatTune.Properties
             double uplink;
             double downlinkOffset;
             double uplinkOffset;
-            if (!double.TryParse(element[1], out downlink) ||
-                !double.TryParse(element[2], out uplink) ||
-                !double.TryParse(element[6], out downlinkOffset) ||
-                !double.TryParse(element[7], out uplinkOffset))
+            if (!TryParseSqfDouble(element[1], false, out downlink) ||
+                !TryParseSqfDouble(element[2], true, out uplink) ||
+                !TryParseSqfDouble(element[6], true, out downlinkOffset) ||
+                !TryParseSqfDouble(element[7], true, out uplinkOffset))
             {
                 return false;
             }
@@ -362,6 +534,17 @@ namespace HamSatTune.Properties
             return true;
         }
 
+        private bool TryParseSqfDouble(string value, bool allowEmpty, out double result)
+        {
+            if (string.IsNullOrWhiteSpace(value) && allowEmpty)
+            {
+                result = 0;
+                return true;
+            }
+
+            return double.TryParse(value.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out result);
+        }
+
         private List<GeoPoint> BuildGroundTrack(Satellite sat, DateTime now)
         {
             List<GeoPoint> points = new List<GeoPoint>();
@@ -376,6 +559,13 @@ namespace HamSatTune.Properties
         private GeoPoint ToGeoPoint(GeodeticCoordinate coordinate)
         {
             return new GeoPoint(coordinate.Latitude.Degrees, coordinate.Longitude.Degrees);
+        }
+
+        private class NextSatelliteInfo
+        {
+            public string Name { get; set; }
+            public Tle Tle { get; set; }
+            public SatelliteVisibilityPeriod Pass { get; set; }
         }
 
         private struct GeoPoint
@@ -449,6 +639,7 @@ namespace HamSatTune.Properties
                 DrawFootprint(g);
                 DrawGroundTrack(g);
                 DrawMarker(g, StationPosition, Color.DeepSkyBlue, StationLabel, 7);
+
                 DrawMarker(g, SatellitePosition, Color.Lime, SatelliteLabel, 8);
             }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -16,6 +17,8 @@ namespace HamSatTune
     {
         private readonly DataGridView grid = new DataGridView();
         private readonly Timer refreshTimer = new Timer();
+        private const string TleFileName = "tles.txt";
+        private const string ManualTleFileName = "manual_tles.txt";
 
         private GroundStation groundStation;
         private Dictionary<int, Tle> tleList = new Dictionary<int, Tle>();
@@ -120,13 +123,28 @@ namespace HamSatTune
 
         private void LoadTles()
         {
-            if (!File.Exists("tles.txt"))
+            if (!File.Exists(TleFileName) && !File.Exists(ManualTleFileName))
             {
                 return;
             }
 
-            LocalTleProvider provider = new LocalTleProvider(true, "tles.txt");
-            tleList = provider.GetTles();
+            tleList = new Dictionary<int, Tle>();
+            MergeTleFile(TleFileName);
+            MergeTleFile(ManualTleFileName);
+        }
+
+        private void MergeTleFile(string path)
+        {
+            if (!File.Exists(path))
+            {
+                return;
+            }
+
+            LocalTleProvider provider = new LocalTleProvider(true, path);
+            foreach (KeyValuePair<int, Tle> item in provider.GetTles())
+            {
+                tleList[item.Key] = item.Value;
+            }
         }
 
         private void RefreshTimer_Tick(object sender, EventArgs e)
@@ -292,10 +310,10 @@ namespace HamSatTune
             double uplink;
             double downlinkOffset;
             double uplinkOffset;
-            if (!double.TryParse(element[1], out downlink) ||
-                !double.TryParse(element[2], out uplink) ||
-                !double.TryParse(element[6], out downlinkOffset) ||
-                !double.TryParse(element[7], out uplinkOffset))
+            if (!TryParseSqfDouble(element[1], false, out downlink) ||
+                !TryParseSqfDouble(element[2], true, out uplink) ||
+                !TryParseSqfDouble(element[6], true, out downlinkOffset) ||
+                !TryParseSqfDouble(element[7], true, out uplinkOffset))
             {
                 return false;
             }
@@ -310,6 +328,17 @@ namespace HamSatTune
             sqf.uplinkOffset = uplinkOffset;
             sqf.comment = element[8].Trim();
             return true;
+        }
+
+        private bool TryParseSqfDouble(string value, bool allowEmpty, out double result)
+        {
+            if (string.IsNullOrWhiteSpace(value) && allowEmpty)
+            {
+                result = 0;
+                return true;
+            }
+
+            return double.TryParse(value.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out result);
         }
 
         private string FormatUntil(SatelliteVisibilityPeriod pass, DateTime nowUtc)

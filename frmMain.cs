@@ -11,6 +11,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -28,6 +29,11 @@ namespace HamSatTune
 
         int updateInterval = 1000; //ms
         const int Ft4FastTimerInterval = 250; //ms
+        const int RotorUpdateInterval = 1000; //ms
+        const int MainStatusUpdateInterval = 1000; //ms
+        const int TleDownloadTimeoutMs = 15000; //ms
+        const string TleFileName = "tles.txt";
+        const string ManualTleFileName = "manual_tles.txt";
 
         Dictionary<int, Tle> tlelist;
         Tle TleUse;
@@ -49,6 +55,8 @@ namespace HamSatTune
         Double az;
         Double el;
         Double el_last;
+        DateTime lastRotorTrackTime = DateTime.MinValue;
+        DateTime lastMainStatusUpdateTime = DateTime.MinValue;
 
         bool SatelliteFrequencyReset = false;
         bool SatelliteModeReset = false;
@@ -82,47 +90,72 @@ namespace HamSatTune
         {
             _splashScreen = new frmSplashScreen();
             _splashScreen.Show();
+            _splashScreen.Refresh();
 
-            string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            this.Text = this.Text + " v." + version;
-            this.KeyPreview = true;
+            try
+            {
+                string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                this.Text = this.Text + " v." + version;
+                this.KeyPreview = true;
 
-            
-            // Read Config
-            AppSettingsSection config = ConfigurationManager.OpenExeConfiguration(System.Reflection.Assembly.GetExecutingAssembly().Location).AppSettings;
-            string QTH = config.Settings["QTH"].Value;
-            double lat =  M0JIV.MaidenheadLocator.MaidenheadLocatorEngine.GetLatLon(QTH).Lat;
-            double lon = M0JIV.MaidenheadLocator.MaidenheadLocatorEngine.GetLatLon(QTH).Lon;
+                // Read Config
+                AppSettingsSection config = ConfigurationManager.OpenExeConfiguration(System.Reflection.Assembly.GetExecutingAssembly().Location).AppSettings;
+                KeyValueConfigurationElement qthSetting = config.Settings["QTH"];
+                if (qthSetting == null || string.IsNullOrWhiteSpace(qthSetting.Value))
+                {
+                    throw new ConfigurationErrorsException("Missing QTH setting in App.config.");
+                }
 
-            // Setup Timer
-            trackingTimer = new Timer();
-            trackingTimer.Interval = updateInterval;
-            trackingTimer.Tick += TrackingTimer_Tick;
+                string QTH = qthSetting.Value.Trim();
+                double lat = M0JIV.MaidenheadLocator.MaidenheadLocatorEngine.GetLatLon(QTH).Lat;
+                double lon = M0JIV.MaidenheadLocator.MaidenheadLocatorEngine.GetLatLon(QTH).Lon;
 
-            // Setup Omnirig
-            rig = new OmniRig();
+                // Setup Timer
+                trackingTimer = new Timer();
+                trackingTimer.Interval = updateInterval;
+                trackingTimer.Tick += TrackingTimer_Tick;
 
-            // Set up our ground station location
-            var location = new GeodeticCoordinate(Angle.FromDegrees(lat), Angle.FromDegrees(lon), 0);
-            groundStation = new GroundStation(location);
+                // Setup Omnirig
+                rig = new OmniRig();
 
+                // Set up our ground station location
+                var location = new GeodeticCoordinate(Angle.FromDegrees(lat), Angle.FromDegrees(lon), 0);
+                groundStation = new GroundStation(location);
 
-           loadTle();
-           loadSqf();
+                loadTle();
+                loadSqf();
 
-            _splashScreen.Hide();
-            
-            lbl_RxFreq.Text = "";
-            lbl_TxFreq.Text = "";
-            lbl_uplinkMode.Text = "";
-            lbl_downlinkMode.Text = "";
-            lbl_az.Text = "";
-            lbl_el.Text = "";
-            lbl_qth.Text = QTH;
-            chk_Simplex.Enabled = false;
-            lbl_rigtype.Text = "";
-            lbl_rig2type.Text = "";
-            lbl_rotortype.Text = "";
+                lbl_RxFreq.Text = "";
+                lbl_TxFreq.Text = "";
+                lbl_uplinkMode.Text = "";
+                lbl_downlinkMode.Text = "";
+                lbl_az.Text = "";
+                lbl_el.Text = "";
+                lbl_qth.Text = QTH;
+                chk_Simplex.Enabled = false;
+                lbl_rigtype.Text = "";
+                lbl_rig2type.Text = "";
+                lbl_rotortype.Text = "";
+            }
+            catch (Exception ex)
+            {
+                if (_splashScreen != null && !_splashScreen.IsDisposed)
+                {
+                    _splashScreen.Hide();
+                }
+
+                MessageBox.Show(this, "Startup failed: " + ex.Message, "HamSatTune", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Close();
+            }
+            finally
+            {
+                if (_splashScreen != null)
+                {
+                    _splashScreen.Hide();
+                    _splashScreen.Dispose();
+                    _splashScreen = null;
+                }
+            }
 
         }
 
@@ -133,28 +166,57 @@ namespace HamSatTune
             // download TLE from network.  
             try
             {
-                using (var client = new WebClient())
+                using (var client = new TimeoutWebClient(TleDownloadTimeoutMs))
                 {
                     string tempFile = "tles_temp.txt";
                     client.DownloadFile("https://www.amsat.org/tle/current/nasabare.txt", tempFile);
-                    File.Copy(tempFile, "tles.txt", true);
-                    File.Delete(tempFile);
+                    File.Copy(tempFile, TleFileName, true);
+                    if (File.Exists(tempFile))
+                    {
+                        File.Delete(tempFile);
+                    }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                //essageBox.Show(this, "Error: " + ex.Message + "\nUsing existing tles.txt file if available.");
-                _splashScreen.lbl_statusUpdate.Text = "Cannot update lasted TLE file from Internet...";
-                Application.DoEvents(); // Allow UI to refresh
+                UpdateSplashStatus("Cannot update lasted TLE file from Internet...");
                 System.Threading.Thread.Sleep(3000);
 
             }
 
-            var provider = new LocalTleProvider(true, "tles.txt");
+            if (!File.Exists(TleFileName) && !File.Exists(ManualTleFileName))
+            {
+                throw new FileNotFoundException("Cannot find local TLE file.", TleFileName);
+            }
 
+            loadLocalTle();
+        }
 
-            // Get every TLE  
-            tlelist = provider.GetTles();
+        private void loadLocalTle()
+        {
+            if (!File.Exists(TleFileName) && !File.Exists(ManualTleFileName))
+            {
+                throw new FileNotFoundException("Cannot find local TLE file.", TleFileName);
+            }
+
+            tlelist = new Dictionary<int, Tle>();
+
+            MergeTleFile(TleFileName, tlelist);
+            MergeTleFile(ManualTleFileName, tlelist);
+        }
+
+        private void MergeTleFile(string path, Dictionary<int, Tle> target)
+        {
+            if (!File.Exists(path))
+            {
+                return;
+            }
+
+            LocalTleProvider provider = new LocalTleProvider(true, path);
+            foreach (KeyValuePair<int, Tle> item in provider.GetTles())
+            {
+                target[item.Key] = item.Value;
+            }
         }
 
         private void loadSqf()
@@ -164,21 +226,43 @@ namespace HamSatTune
 
             List<Sqf> sortedSqfList = new List<Sqf>();
 
+            if (!File.Exists("Doppler.sqf"))
+            {
+                throw new FileNotFoundException("Cannot find Doppler.sqf.", "Doppler.sqf");
+            }
+
+            int lineNumber = 0;
             foreach(string line in File.ReadLines(@"Doppler.sqf"))
             {
+                lineNumber++;
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    continue;
+                }
+
                 string[] element = line.Split(',');
+                if (element.Length < 9)
+                {
+                    throw new FormatException("Invalid Doppler.sqf format at line " + lineNumber + ".");
+                }
+
                 Sqf _sqf = new Sqf();
-                _sqf.sateName = element[0];
-                _sqf.downlinkFreq = Convert.ToDouble(element[1]);
-                _sqf.uplinkFreq = Convert.ToDouble(element[2]);
-                _sqf.downlinkMode = element[3];
-                _sqf.uplinkMode = element[4];
-                _sqf.transponderType = element[5];
-                _sqf.downlinkOffset = Convert.ToDouble(element[6]);
-                _sqf.uplinkOffset = Convert.ToDouble(element[7]);
-                _sqf.comment = element[8];
+                _sqf.sateName = element[0].Trim();
+                _sqf.downlinkFreq = ParseSqfDouble(element[1], lineNumber, "downlink frequency", false);
+                _sqf.uplinkFreq = ParseSqfDouble(element[2], lineNumber, "uplink frequency", true);
+                _sqf.downlinkMode = element[3].Trim();
+                _sqf.uplinkMode = element[4].Trim();
+                _sqf.transponderType = element[5].Trim();
+                _sqf.downlinkOffset = ParseSqfDouble(element[6], lineNumber, "downlink offset", true);
+                _sqf.uplinkOffset = ParseSqfDouble(element[7], lineNumber, "uplink offset", true);
+                _sqf.comment = element[8].Trim();
 
                 sortedSqfList.Add(_sqf);
+            }
+
+            if (sortedSqfList.Count == 0)
+            {
+                throw new InvalidDataException("Doppler.sqf does not contain any satellite entries.");
             }
 
             sortedSqfList = sortedSqfList
@@ -193,6 +277,103 @@ namespace HamSatTune
                 cbList.Items.Add(_sqf.sateName + " " + _sqf.comment);
             }
 
+        }
+
+        private void ReloadSqfPreservingSelection()
+        {
+            string selectedName = sqf.sateName;
+            string selectedComment = sqf.comment;
+
+            loadSqf();
+
+            int selectedIndex = FindSqfIndex(selectedName, selectedComment);
+            if (selectedIndex < 0)
+            {
+                selectedIndex = FindSqfIndex(selectedName, null);
+            }
+
+            if (selectedIndex >= 0)
+            {
+                cbList.SelectedIndex = selectedIndex;
+                return;
+            }
+
+            Globals.CurrentSqf = new Sqf();
+            sqf = Globals.CurrentSqf;
+            sqf_last = sqf;
+        }
+
+        private int FindSqfIndex(string satelliteName, string comment)
+        {
+            if (string.IsNullOrWhiteSpace(satelliteName) || sqflist == null)
+            {
+                return -1;
+            }
+
+            foreach (KeyValuePair<int, Sqf> item in sqflist)
+            {
+                Sqf candidate = item.Value;
+                if (!string.Equals(candidate.sateName, satelliteName, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                if (comment == null || string.Equals(candidate.comment, comment, StringComparison.OrdinalIgnoreCase))
+                {
+                    return item.Key;
+                }
+            }
+
+            return -1;
+        }
+
+        private static double ParseSqfDouble(string value, int lineNumber, string fieldName, bool allowEmpty)
+        {
+            if (string.IsNullOrWhiteSpace(value) && allowEmpty)
+            {
+                return 0;
+            }
+
+            double result;
+            if (!double.TryParse(value.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out result))
+            {
+                throw new FormatException("Invalid " + fieldName + " in Doppler.sqf at line " + lineNumber + ".");
+            }
+
+            return result;
+        }
+
+        private void UpdateSplashStatus(string message)
+        {
+            if (_splashScreen == null || _splashScreen.IsDisposed)
+            {
+                return;
+            }
+
+            _splashScreen.lbl_statusUpdate.Text = message;
+            _splashScreen.Refresh();
+            Application.DoEvents(); // Allow UI to refresh while startup is still synchronous.
+        }
+
+        private class TimeoutWebClient : WebClient
+        {
+            private readonly int timeoutMs;
+
+            public TimeoutWebClient(int timeoutMs)
+            {
+                this.timeoutMs = timeoutMs;
+            }
+
+            protected override WebRequest GetWebRequest(Uri address)
+            {
+                WebRequest request = base.GetWebRequest(address);
+                if (request != null)
+                {
+                    request.Timeout = timeoutMs;
+                }
+
+                return request;
+            }
         }
 
         private void cbList_SelectedIndexChanged(object sender, EventArgs e)
@@ -241,25 +422,29 @@ namespace HamSatTune
         private void TrackingTimer_Tick(object sender, EventArgs e)
         {
             sqf = Globals.CurrentSqf; // Get latest SQF in case user change SQF when timer is running.
+            bool updateMainStatus = (DateTime.Now - lastMainStatusUpdateTime).TotalMilliseconds >= MainStatusUpdateInterval;
 
             // Rig1 Status
-            if (chk_ConnectRig.Checked)
+            if (updateMainStatus)
             {
-                lbl_rigtype.Text = "Rig1: " + rig.rigType() + " " + rig.rigStatus();
-            }
-            else
-            {
-                lbl_rigtype.Text = "No Rig1 Connected";
-            }
-            
-            // Rig2 Status
-            if (chk_ConnectRig2.Checked) 
-            {
-                lbl_rig2type.Text = "Rig2: " + rig.rig2Type() + " " + rig.rig2Status();
-            }
-            else
-            {
-                lbl_rig2type.Text = "No Rig2 Connected";
+                if (chk_ConnectRig.Checked)
+                {
+                    lbl_rigtype.Text = "Rig1: " + rig.rigType() + " " + rig.rigStatus();
+                }
+                else
+                {
+                    lbl_rigtype.Text = "No Rig1 Connected";
+                }
+
+                // Rig2 Status
+                if (chk_ConnectRig2.Checked)
+                {
+                    lbl_rig2type.Text = "Rig2: " + rig.rig2Type() + " " + rig.rig2Status();
+                }
+                else
+                {
+                    lbl_rig2type.Text = "No Rig2 Connected";
+                }
             }
 
 
@@ -356,8 +541,12 @@ namespace HamSatTune
             el_last = el;
 
             // Display AZ, EL
-            lbl_az.Text = az.ToString("#0.#0°");
-            lbl_el.Text = el.ToString("#0.#0°");
+            if (updateMainStatus)
+            {
+                lbl_az.Text = az.ToString("#0.#0°");
+                lbl_el.Text = el.ToString("#0.#0°");
+                lastMainStatusUpdateTime = DateTime.Now;
+            }
 
             // Calculate current downlink Doppler before checking free-tune.
             // Near high elevation the Doppler slope is steep, so using last tick's shift can re-baseline incorrectly.
@@ -594,7 +783,7 @@ namespace HamSatTune
                 txt_TuneRx.Enabled = true;
                 bb_tune.Enabled = true;
                 chk_Simplex.Enabled = false;
-                lbl_rigtype.Text = "No Rig1 Connected";
+                lbl_rigtype.Text = "Rig1 Not Connect";
             }
 
             SatelliteFrequencyReset = true;
@@ -618,7 +807,7 @@ namespace HamSatTune
                 txt_TuneRx.Enabled = true;
                 bb_tune.Enabled = true;
                 chk_Simplex.Enabled = false;
-                lbl_rig2type.Text = "No Rig2 Connected";
+                lbl_rig2type.Text = "Rig2 Not Connect";
             }
         }
 
@@ -673,7 +862,7 @@ namespace HamSatTune
                 {
                     // Save updated offsets back to Doppler.sqf
                     rigcal.SaveOffsetsToFile();
-                    loadSqf(); // reload sqf to make sure get latest sqf if user update sqf file when software is running.
+                    ReloadSqfPreservingSelection(); // reload sqf to make sure get latest sqf if user update sqf file when software is running.
                     rigcal.Dispose();
                 }
             }
@@ -684,7 +873,61 @@ namespace HamSatTune
         // Open Doppler.sqf in editor when user click the button, so user can edit Doppler.sqf to add new satellite or adjust frequency and mode for existing satellite.
         private void bb_sqf_Click(object sender, EventArgs e)
         {
-            OpenDopplerInEditor();
+            using (frmSqfManager sqfManager = new frmSqfManager("Doppler.sqf", GetTleSatelliteNames()))
+            {
+                sqfManager.ShowDialog(this);
+                if (sqfManager.SqfChanged)
+                {
+                    ReloadSqfPreservingSelection();
+                }
+            }
+        }
+
+        private IEnumerable<string> GetTleSatelliteNames()
+        {
+            if (tlelist == null)
+            {
+                return Enumerable.Empty<string>();
+            }
+
+            return tlelist.Values
+                .Where(tle => tle != null && !string.IsNullOrWhiteSpace(tle.Name))
+                .Select(tle => tle.Name.Trim())
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+        }
+
+        private void bb_tle_Click(object sender, EventArgs e)
+        {
+            using (frmTleEditor tleEditor = new frmTleEditor())
+            {
+                DialogResult dialogResult = tleEditor.ShowDialog(this);
+                if (tleEditor.ManualTleChanged)
+                {
+                    loadLocalTle();
+                }
+
+                if (dialogResult != DialogResult.OK)
+                {
+                    return;
+                }
+
+                try
+                {
+                    if (!SaveManualTle(tleEditor.SatelliteName, tleEditor.TleLine1, tleEditor.TleLine2, tleEditor.ParsedTle))
+                    {
+                        return;
+                    }
+
+                    loadLocalTle();
+                    MessageBox.Show(this, "TLE saved and reloaded. Add matching SQF frequency data if this satellite is not in the list.", "HamSatTune", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(this, "Cannot save TLE: " + ex.Message, "HamSatTune", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
         private void bb_map_Click(object sender, EventArgs e)
@@ -756,6 +999,7 @@ namespace HamSatTune
             if (string.IsNullOrWhiteSpace(error))
             {
                 lbl_rotortype.Text = "Rotor: connected " + portName;
+                lastRotorTrackTime = DateTime.MinValue;
             }
             else
             {
@@ -777,13 +1021,19 @@ namespace HamSatTune
             lbl_rotortype.Text = "Rotor: disconnected";
         }
 
-        private void UpdateRotorTracking()
+        private void UpdateRotorTracking() // Set rotor position every 1 second.
         {
             if (!chk_AutoTrackRotor.Checked || mainRotor == null || !mainRotor.IsConnected)
             {
                 return;
             }
 
+            if ((DateTime.Now - lastRotorTrackTime).TotalMilliseconds < RotorUpdateInterval)
+            {
+                return;
+            }
+
+            lastRotorTrackTime = DateTime.Now;
             mainRotor.SetPosition(az, el);
         }
 
@@ -806,6 +1056,111 @@ namespace HamSatTune
             Configuration config = ConfigurationManager.OpenExeConfiguration(System.Reflection.Assembly.GetExecutingAssembly().Location);
             KeyValueConfigurationElement setting = config.AppSettings.Settings[key];
             return setting == null ? defaultValue : setting.Value;
+        }
+
+        private bool SaveManualTle(string name, string line1, string line2, Tle parsedTle)
+        {
+            string path = ManualTleFileName;
+            List<string> lines = File.Exists(path)
+                ? File.ReadAllLines(path).ToList()
+                : new List<string>();
+
+            int existingIndex = FindTleEntryIndex(lines, parsedTle.NoradNumber);
+            if (existingIndex >= 0)
+            {
+                DialogResult replace = MessageBox.Show(
+                    this,
+                    "TLE for NORAD " + parsedTle.NoradNumber + " already exists. Replace it?",
+                    "HamSatTune",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (replace != DialogResult.Yes)
+                {
+                    return false;
+                }
+
+                int removeCount = GetTleEntryLineCount(lines, existingIndex);
+                lines.RemoveRange(existingIndex, removeCount);
+                InsertTleEntry(lines, existingIndex, name, line1, line2);
+            }
+            else
+            {
+                if (tlelist != null && tlelist.ContainsKey((int)parsedTle.NoradNumber))
+                {
+                    DialogResult replaceDownloaded = MessageBox.Show(
+                        this,
+                        "Downloaded TLE for NORAD " + parsedTle.NoradNumber + " already exists. Save a manual TLE that overrides it?",
+                        "HamSatTune",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question);
+
+                    if (replaceDownloaded != DialogResult.Yes)
+                    {
+                        return false;
+                    }
+                }
+
+                if (lines.Count > 0 && !string.IsNullOrWhiteSpace(lines[lines.Count - 1]))
+                {
+                    lines.Add("");
+                }
+
+                InsertTleEntry(lines, lines.Count, name, line1, line2);
+            }
+
+            File.WriteAllLines(path, lines);
+            return true;
+        }
+
+        private int FindTleEntryIndex(List<string> lines, uint noradNumber)
+        {
+            string noradText = noradNumber.ToString(CultureInfo.InvariantCulture).PadLeft(5, ' ');
+
+            for (int i = 0; i < lines.Count; i++)
+            {
+                string line = lines[i];
+                if (!line.StartsWith("1 ", StringComparison.Ordinal) || line.Length < 7)
+                {
+                    continue;
+                }
+
+                if (line.Substring(2, 5) == noradText)
+                {
+                    return i > 0 && !lines[i - 1].StartsWith("2 ", StringComparison.Ordinal) ? i - 1 : i;
+                }
+            }
+
+            return -1;
+        }
+
+        private int GetTleEntryLineCount(List<string> lines, int entryIndex)
+        {
+            if (entryIndex < 0 || entryIndex >= lines.Count)
+            {
+                return 0;
+            }
+
+            if (lines[entryIndex].StartsWith("1 ", StringComparison.Ordinal))
+            {
+                return entryIndex + 1 < lines.Count && lines[entryIndex + 1].StartsWith("2 ", StringComparison.Ordinal) ? 2 : 1;
+            }
+
+            if (entryIndex + 2 < lines.Count
+                && lines[entryIndex + 1].StartsWith("1 ", StringComparison.Ordinal)
+                && lines[entryIndex + 2].StartsWith("2 ", StringComparison.Ordinal))
+            {
+                return 3;
+            }
+
+            return 1;
+        }
+
+        private void InsertTleEntry(List<string> lines, int index, string name, string line1, string line2)
+        {
+            lines.Insert(index, line2);
+            lines.Insert(index, line1);
+            lines.Insert(index, name);
         }
 
         // Open Doppler.sqf in the user's default editor (Notepad) for manual editing
