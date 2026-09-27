@@ -32,8 +32,16 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.9.0.0")]
-[assembly: AssemblyFileVersion("1.9.0.0")]
+[assembly: AssemblyVersion("2.1.0.0")]
+[assembly: AssemblyFileVersion("2.1.0.0")]
+
+// V2.1.0
+// - Add voice announcements for incoming satellites
+// - Fix the calibration unit label from kHz to Hz
+
+// V2.0.0
+// - Add support  for IC-7100 
+// - Add logbook but not release yet, will release in next version
 
 // V1.9.0
 // - Add TLE Update function 

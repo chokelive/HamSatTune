@@ -189,7 +189,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(50, 13);
             this.label1.TabIndex = 14;
-            this.label1.Text = "RX (kHz)";
+            this.label1.Text = "RX (Hz)";
             // 
             // label2
             // 
@@ -198,7 +198,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(49, 13);
             this.label2.TabIndex = 15;
-            this.label2.Text = "TX (kHz)";
+            this.label2.Text = "TX (Hz)";
             // 
             // bb_save
             // 

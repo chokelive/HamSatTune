@@ -16,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Speech.Synthesis;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -31,6 +32,8 @@ namespace HamSatTune
         const int Ft4FastTimerInterval = 250; //ms
         const int RotorUpdateInterval = 1000; //ms
         const int MainStatusUpdateInterval = 1000; //ms
+        const int VoicePassRefreshIntervalSeconds = 30;
+        const int VoiceAnnouncementLeadMinutes = 5;
         const int TleDownloadTimeoutMs = 15000; //ms
         const string TleFileName = "tles.txt";
         const string ManualTleFileName = "manual_tles.txt";
@@ -57,6 +60,10 @@ namespace HamSatTune
         Double el_last;
         DateTime lastRotorTrackTime = DateTime.MinValue;
         DateTime lastMainStatusUpdateTime = DateTime.MinValue;
+        DateTime lastVoicePassRefreshTime = DateTime.MinValue;
+        readonly HashSet<string> announcedVoiceEvents = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        List<VoicePass> voicePasses = new List<VoicePass>();
+        bool hasObservedElevation;
 
         bool SatelliteFrequencyReset = false;
         bool SatelliteModeReset = false;
@@ -73,7 +80,10 @@ namespace HamSatTune
         HamSatTune.Properties.frmMap mapForm;
         frmNextPass nextPassForm;
         frmRotorControl rotorControlForm;
+        frmLog logForm;
         RotorControlProcess mainRotor;
+        SpeechSynthesizer voiceSynthesizer;
+        bool useThaiVoice;
 
         public frmMain()
         {
@@ -82,6 +92,13 @@ namespace HamSatTune
 
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
+            if (voiceSynthesizer != null)
+            {
+                voiceSynthesizer.SpeakAsyncCancelAll();
+                voiceSynthesizer.Dispose();
+                voiceSynthesizer = null;
+            }
+
             mainRotor?.Dispose();
             base.OnFormClosed(e);
         }
@@ -107,6 +124,7 @@ namespace HamSatTune
                 }
 
                 string QTH = qthSetting.Value.Trim();
+                Globals.CurrentGrid = QTH.ToUpperInvariant();
                 double lat = M0JIV.MaidenheadLocator.MaidenheadLocatorEngine.GetLatLon(QTH).Lat;
                 double lon = M0JIV.MaidenheadLocator.MaidenheadLocatorEngine.GetLatLon(QTH).Lon;
 
@@ -114,6 +132,12 @@ namespace HamSatTune
                 trackingTimer = new Timer();
                 trackingTimer.Interval = updateInterval;
                 trackingTimer.Tick += TrackingTimer_Tick;
+
+                if (IsVoiceAnnouncementsEnabled())
+                {
+                    voiceSynthesizer = new SpeechSynthesizer();
+                    useThaiVoice = SelectConfiguredVoice(voiceSynthesizer);
+                }
 
                 // Setup Omnirig
                 rig = new OmniRig();
@@ -395,6 +419,8 @@ namespace HamSatTune
             {
                 TleUse = tlelist[(int)norad];
 
+                hasObservedElevation = false;
+
                 // Start Tracking and doppler
                 trackingTimer.Start();
             }
@@ -414,6 +440,7 @@ namespace HamSatTune
             SatelliteModeReset = true; // only set new mode.
 
             sqf_last = sqf;
+            RefreshOpenLogContext();
 
         }
 
@@ -523,7 +550,8 @@ namespace HamSatTune
             
 
             Satellite sat = new Satellite(TleUse);
-            var observation = groundStation.Observe(sat, DateTime.UtcNow);
+            DateTime nowUtc = DateTime.UtcNow;
+            var observation = groundStation.Observe(sat, nowUtc);
 
             // Get AZ, EL
             az = observation.Azimuth.Degrees;
@@ -532,13 +560,17 @@ namespace HamSatTune
             Globals.CurrentEl = el;
             UpdateTrackingIntervalForPass();
 
+            UpdateVoiceAnnouncements(nowUtc);
+
             // reset frequency if Satellite AOS
-            if (el_last<0 && el>0)
+            bool satelliteAos = hasObservedElevation && el_last < 0 && el > 0;
+            if (satelliteAos)
             {
                 ResetDopplerBase();
                 SatelliteModeReset = true;
             }
             el_last = el;
+            hasObservedElevation = true;
 
             // Display AZ, EL
             if (updateMainStatus)
@@ -641,12 +673,17 @@ namespace HamSatTune
             }
             lbl_TxFreq.Text = ((double)txFreq / 1000).ToString("#0.#0");
             Globals.CalculatedUplinkHz = txFreq;
+            RefreshOpenLogFrequencies();
 
             // Set TX frequency to IC-705 or IC-9700
             if (chk_ConnectRig.Checked)
             {
                 //if (rig.rigType() != "FT-817")
                 if (rig.rigType().Contains("IC-705"))
+                {
+                    rig.setFreqB(txFreq);
+                }
+                else if (rig.rigType().Contains("IC-7100"))
                 {
                     rig.setFreqB(txFreq);
                 }
@@ -726,6 +763,176 @@ namespace HamSatTune
             {
                 trackingTimer.Interval = interval;
             }
+        }
+
+        private void UpdateVoiceAnnouncements(DateTime nowUtc)
+        {
+            if (voiceSynthesizer == null || groundStation == null || sqflist == null || tlelist == null)
+            {
+                return;
+            }
+
+            if ((nowUtc - lastVoicePassRefreshTime).TotalSeconds >= VoicePassRefreshIntervalSeconds)
+            {
+                RefreshVoicePasses(nowUtc);
+            }
+
+            foreach (VoicePass pass in voicePasses)
+            {
+                TimeSpan untilAos = pass.Aos - nowUtc;
+                string warningKey = GetVoiceEventKey(pass, "warning");
+                string aosKey = GetVoiceEventKey(pass, "aos");
+
+                if (untilAos > TimeSpan.Zero &&
+                    untilAos <= TimeSpan.FromMinutes(VoiceAnnouncementLeadMinutes) &&
+                    announcedVoiceEvents.Add(warningKey))
+                {
+                    AnnounceVoice(BuildAosWarning(pass.Name));
+                }
+
+                if (pass.Aos <= nowUtc && nowUtc - pass.Aos <= TimeSpan.FromSeconds(30) &&
+                    announcedVoiceEvents.Add(aosKey))
+                {
+                    AnnounceVoice(BuildAosAnnouncement(pass.Name));
+                }
+            }
+        }
+
+        private void RefreshVoicePasses(DateTime nowUtc)
+        {
+            List<VoicePass> refreshedPasses = new List<VoicePass>();
+            HashSet<string> addedNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (Sqf configuredSatellite in sqflist.Values)
+            {
+                if (string.IsNullOrWhiteSpace(configuredSatellite.sateName) ||
+                    !addedNames.Add(configuredSatellite.sateName))
+                {
+                    continue;
+                }
+
+                Tle tle = tlelist.Values.FirstOrDefault(item =>
+                    string.Equals(item.Name, configuredSatellite.sateName, StringComparison.OrdinalIgnoreCase));
+                if (tle == null)
+                {
+                    continue;
+                }
+
+                try
+                {
+                    Satellite satellite = new Satellite(tle);
+                    List<SatelliteVisibilityPeriod> passes = groundStation.Observe(
+                        satellite,
+                        nowUtc.AddSeconds(-30),
+                        nowUtc.AddHours(24),
+                        TimeSpan.FromSeconds(30),
+                        Angle.Zero,
+                        false,
+                        false,
+                        0);
+
+                    SatelliteVisibilityPeriod pass = passes.FirstOrDefault(item => item.End > nowUtc);
+                    if (pass != null && pass.MaxElevation.Degrees > 0)
+                    {
+                        refreshedPasses.Add(new VoicePass
+                        {
+                            Name = configuredSatellite.sateName,
+                            Aos = pass.Start,
+                            Los = pass.End
+                        });
+                    }
+                }
+                catch
+                {
+                    // An invalid satellite must not stop announcements for the others.
+                }
+            }
+
+            voicePasses = refreshedPasses;
+            lastVoicePassRefreshTime = nowUtc;
+        }
+
+        private string GetVoiceEventKey(VoicePass pass, string eventName)
+        {
+            // Passes are recalculated every 30 seconds.  The calculated AOS can
+            // differ by a few seconds between refreshes, even when it is the
+            // same physical pass.  Do not use the raw timestamp as the event
+            // identity or the same satellite may be announced repeatedly.
+            DateTime aosMinute = new DateTime(
+                pass.Aos.Year,
+                pass.Aos.Month,
+                pass.Aos.Day,
+                pass.Aos.Hour,
+                pass.Aos.Minute,
+                0,
+                DateTimeKind.Utc);
+
+            return pass.Name + "|" + aosMinute.Ticks + "|" + eventName;
+        }
+
+        private void AnnounceVoice(string message)
+        {
+            if (voiceSynthesizer == null || string.IsNullOrWhiteSpace(message))
+            {
+                return;
+            }
+
+            try
+            {
+                voiceSynthesizer.SpeakAsync(message);
+            }
+            catch
+            {
+                // Voice output must never interrupt satellite tracking.
+            }
+        }
+
+        private bool SelectConfiguredVoice(SpeechSynthesizer synthesizer)
+        {
+            string language = GetAppSetting("VoiceLanguage", "th-TH");
+            if (!string.Equals(language, "th-TH", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            InstalledVoice thaiVoice = synthesizer.GetInstalledVoices()
+                .FirstOrDefault(voice => voice.Enabled &&
+                    voice.VoiceInfo.Culture.Name.StartsWith("th-TH", StringComparison.OrdinalIgnoreCase));
+
+            if (thaiVoice == null)
+            {
+                return false;
+            }
+
+            synthesizer.SelectVoice(thaiVoice.VoiceInfo.Name);
+            return true;
+        }
+
+        private string BuildAosWarning(string satelliteName)
+        {
+            return useThaiVoice
+                ? "อีกห้านาที ดาวเทียม " + satelliteName + " จะเริ่มรับสัญญาณได้"
+                : satelliteName + " will reach AOS in five minutes.";
+        }
+
+        private string BuildAosAnnouncement(string satelliteName)
+        {
+            return useThaiVoice
+                ? "ดาวเทียม " + satelliteName + " เริ่มรับสัญญาณได้แล้ว"
+                : satelliteName + " AOS now.";
+        }
+
+        private bool IsVoiceAnnouncementsEnabled()
+        {
+            bool enabled;
+            return bool.TryParse(GetAppSetting("VoiceAnnouncements", "true"), out enabled) && enabled;
+        }
+
+        private class VoicePass
+        {
+            public string Name { get; set; }
+            public DateTime Aos { get; set; }
+            public DateTime Los { get; set; }
         }
 
         private bool IsFt4Mode()
@@ -961,6 +1168,41 @@ namespace HamSatTune
 
             rotorControlForm.Show();
             rotorControlForm.BringToFront();
+        }
+
+        private void bb_log_Click(object sender, EventArgs e)
+        {
+            if (logForm == null || logForm.IsDisposed)
+            {
+                logForm = new frmLog();
+            }
+            else
+            {
+                logForm.RefreshCurrentContext();
+            }
+
+            logForm.Show();
+            logForm.BringToFront();
+        }
+
+        private void RefreshOpenLogContext()
+        {
+            if (logForm == null || logForm.IsDisposed)
+            {
+                return;
+            }
+
+            logForm.RefreshCurrentContext();
+        }
+
+        private void RefreshOpenLogFrequencies()
+        {
+            if (logForm == null || logForm.IsDisposed)
+            {
+                return;
+            }
+
+            logForm.RefreshCurrentFrequencies();
         }
 
         private void chk_AutoTrackRotor_CheckedChanged(object sender, EventArgs e)
